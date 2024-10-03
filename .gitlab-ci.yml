@@ -11,14 +11,12 @@ include:
   - '/ci/gitlab-ci-common.yml'
   - '/ci/gitlab-ci-linux.yml'
   - '/ci/gitlab-ci-windows.yml'
-  - '/ci/gitlab-ci-mac.yml'
 # jobs
   - '/ci/platforms/ubuntu1804.yml'
   - '/ci/platforms/ubuntu2004.yml'
   - '/ci/platforms/ubuntu2204.yml'
   - '/ci/platforms/ubuntu2404.yml'
   - '/ci/platforms/windows10-vs16.yml'
-  - '/ci/platforms/mac-catalina.yml'
 
 ############################################
 #                  Test                    #
