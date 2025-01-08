@@ -8,10 +8,10 @@
 [![build status](https://gitlab.com/sdurobotics/ur_rtde/badges/master/pipeline.svg)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
 [![pypi](https://badgen.net/pypi/v/ur_rtde)](https://pypi.org/project/ur-rtde/)
 <br>
-[![ps-3.7.2](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_3_7_2.svg?job=polyscope-3.7.2)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
+[![ps-3.12.1](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_3_12_1.svg?job=polyscope-3.12.1)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
 [![ps-3.15.8](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_3_15_8.svg?job=polyscope-3.15.8)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
 [![ps-5.5.1](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_5_5_1.svg?job=polyscope-5.5.1)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
-[![ps-5.12.4](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_5_12_4.svg?job=polyscope-5.12.4)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
+[![ps-5.17.3](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_5_17_3.svg?job=polyscope-5.17.3)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
 </div>
 
 A C++ interface for controlling and receiving data from a UR robot using the 
