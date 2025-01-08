@@ -77,16 +77,16 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
   }
 
   // Create a connection to the dashboard server
-  db_client_ = std::make_shared<DashboardClient>(hostname_);
+  /*db_client_ = std::make_shared<DashboardClient>(hostname_);
   db_client_->connect();
   PolyScopeVersion polyscope_version(db_client_->polyscopeVersion());
   if (polyscope_version.major == 5 && polyscope_version.minor > 5)
   {
     serial_number_ = db_client_->getSerialNumber();
-  }
+  }*/
 
   // Only check if in remote on real robot or when not using the ExternalControl UR Cap.
-  if (!use_external_control_ur_cap_)
+  /*if (!use_external_control_ur_cap_)
   {
     // 192.168.56.101 is the CI ursim test ip address.
     if (hostname_ != "localhost" && hostname_ != "127.0.0.1" && hostname_ != "192.168.56.101")
@@ -100,7 +100,8 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
         }
       }
     }
-  }
+  }*/
+
   no_bytes_avail_cnt_ = 0;
   port_ = 30004;
   custom_script_running_ = false;
@@ -108,6 +109,9 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
   rtde_->connect();
   rtde_->negotiateProtocolVersion();
   versions_ = rtde_->getControllerVersion();
+
+  std::cout << "PolyScope major version: " << versions_.major << std::endl;
+  std::cout << "PolyScope minor version: " << versions_.minor << std::endl;
 
   if (frequency_ < 0)  // frequency not specified, set it based on controller version.
   {
@@ -122,7 +126,7 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
 
   // Create a connection to the script server
   script_client_ = std::make_shared<ScriptClient>(hostname_, versions_.major, versions_.minor);
-  script_client_->connect();
+  //script_client_->connect();
 
   // If user want to use upper range of RTDE registers, add the register offset in control script
   if (use_upper_range_registers_)
@@ -179,7 +183,7 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
   // Clear command register
   sendClearCommand();
 
-  if (upload_script_)
+  /*if (upload_script_)
   {
     if (!isProgramRunning())
     {
@@ -206,7 +210,7 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
       else
         std::cerr << "Failed to send rtde control script to the controller";
     }
-  }
+  }*/
 
 #if !defined(_WIN32) && !defined(__APPLE__)
   // When the user wants to use ur_rtde with the ExternalControl UR Cap
