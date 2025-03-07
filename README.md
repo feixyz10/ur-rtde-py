@@ -35,6 +35,23 @@ A C++ interface for controlling and receiving data from a UR robot using the
 ### Documentation ###
 Documentation with installation and build instructions, examples and API resides at <https://sdurobotics.gitlab.io/ur_rtde/>
 
+### Citing ###
+If you use ur_rtde in your research, please cite:
+
+```
+@inproceedings{10871000,
+  author={Lindvig, Anders Prier and Iturrate, Iñigo and Kindler, Uwe and Sloth, Christoffer},
+  booktitle={2025 IEEE/SICE International Symposium on System Integration (SII)}, 
+  title={ur_rtde: An Interface for Controlling Universal Robots (UR) using the Real-Time Data Exchange (RTDE)}, 
+  year={2025},
+  volume={},
+  number={},
+  pages={1118-1123},
+  keywords={Protocols;Linux;C++ languages;System integration;Writing;Manipulators;Real-time systems;Libraries;Timing;MATLAB},
+  doi={10.1109/SII59315.2025.10871000}}
+
+```
+
 ### Quick Install ##
 
 #### From PPA: ####
