@@ -66,6 +66,7 @@ PYBIND11_MODULE(rtde_control, m)
       .value("FLAG_NO_WAIT", RTDEControlInterface::Flags::FLAG_NO_WAIT)
       .value("FLAG_CUSTOM_SCRIPT", RTDEControlInterface::Flags::FLAG_CUSTOM_SCRIPT)
       .value("FLAG_NO_EXT_FT", RTDEControlInterface::Flags::FLAG_NO_EXT_FT)
+      .value("FLAG_DIABLE_REMOTE_CONTROL_CHECK", RTDEControlInterface::Flags::FLAG_DIABLE_REMOTE_CONTROL_CHECK)
       .value("FLAGS_DEFAULT", RTDEControlInterface::Flags::FLAGS_DEFAULT)
       .export_values();
 
