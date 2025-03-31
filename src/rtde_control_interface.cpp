@@ -168,7 +168,7 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
     throw std::logic_error("Failed to start RTDE data synchronization, before timeout");
 
   // Start executing receiveCallback
-  th_ = std::make_shared<boost::thread>(boost::bind(&RTDEControlInterface::receiveCallback, this));
+  th_.start(boost::bind(&RTDEControlInterface::receiveCallback, this, _1));
 
   // Wait until the first robot state has been received
   while (!robot_state_->getFirstStateReceived())
@@ -333,9 +333,7 @@ void RTDEControlInterface::waitForProgramRunning()
 void RTDEControlInterface::disconnect()
 {
   // Stop the receive callback function
-  stop_thread_ = true;
-  th_->interrupt();
-  th_->join();
+  th_.stop();
 
   if (rtde_ != nullptr)
   {
@@ -432,8 +430,7 @@ bool RTDEControlInterface::reconnect()
     throw std::logic_error("Failed to start RTDE data synchronization, before timeout");
 
   // Start executing receiveCallback
-  stop_thread_ = false;
-  th_ = std::make_shared<boost::thread>(boost::bind(&RTDEControlInterface::receiveCallback, this));
+  th_.start(boost::bind(&RTDEControlInterface::receiveCallback, this, _1));
 
   // Wait until the first robot state has been received
   while (!robot_state_->getFirstStateReceived())
@@ -716,7 +713,7 @@ bool RTDEControlInterface::setupRecipes(const double &frequency)
   return true;
 }
 
-void RTDEControlInterface::receiveCallback()
+void RTDEControlInterface::receiveCallback(std::atomic<bool> *stop_thread)
 {
   bool should_reconnect = false;
   // If someone calls disconnect() stop_thread_ is set to false, so we only
@@ -725,7 +722,7 @@ void RTDEControlInterface::receiveCallback()
   // connection is closed. Therefore we also need to check, if rtde_ is still
   // connected. only if these two requirements are met, it is safe to access
   // the rtde_ functions.
-  while (!stop_thread_ && rtde_->isConnected())
+  while (!*stop_thread && rtde_->isConnected())
   {
     // Receive and update the robot state
     try
@@ -801,7 +798,7 @@ void RTDEControlInterface::receiveCallback()
       catch (std::exception &e)
       {
         std::cerr << "RTDEControlInterface Exception: " << e.what() << std::endl;
-        stop_thread_ = true;
+        th_.signalStop();
         return;
         // is it save to throw exceptions in an ASIO async handler? If this line
         // is not disables, it will crash the application
