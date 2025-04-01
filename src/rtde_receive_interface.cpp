@@ -85,7 +85,7 @@ RTDEReceiveInterface::RTDEReceiveInterface(std::string hostname, double frequenc
   rtde_->sendStart();
 
   // Start executing receiveCallback
-  th_.start(boost::bind(&RTDEReceiveInterface::receiveCallback, this, _1));
+  th_.start(boost::bind(&RTDEReceiveInterface::receiveCallback, this, boost::placeholders::_1));
 
   // Wait until the first robot state has been received
   while (isConnected() && !robot_state_->getFirstStateReceived())
@@ -304,7 +304,7 @@ bool RTDEReceiveInterface::reconnect()
     rtde_->sendStart();
 
     // Start executing receiveCallback
-    th_.start(boost::bind(&RTDEReceiveInterface::receiveCallback, this, _1));
+    th_.start(boost::bind(&RTDEReceiveInterface::receiveCallback, this, boost::placeholders::_1));
 
     // Wait until the first robot state has been received
     while (!robot_state_->getFirstStateReceived())
@@ -371,7 +371,7 @@ bool RTDEReceiveInterface::startFileRecording(const std::string &filename, const
   *file_recording_ << std::endl;
 
   // Start recorder thread
-  record_thrd_.start(boost::bind(&RTDEReceiveInterface::recordCallback, this, _1));
+  record_thrd_.start(boost::bind(&RTDEReceiveInterface::recordCallback, this, boost::placeholders::_1));
   return true;
 }
 

@@ -2,6 +2,13 @@ cmake_minimum_required(VERSION 3.5)
 if (POLICY CMP0074)
 	cmake_policy(SET CMP0074 NEW)
 endif()
+if (POLICY CMP0148)
+	cmake_policy(SET CMP0148 OLD)
+endif()
+if (POLICY CMP0167)
+	cmake_policy(SET CMP0167 NEW)
+endif()
+
 list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # options
@@ -200,6 +207,8 @@ if(${CODE})
 	set_target_properties(rtde PROPERTIES 
 			VERSION ${PROJECT_VERSION} 
 			SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR})
+
+	#target_compile_definitions(rtde PRIVATE BOOST_ASIO_NO_DEPRECATED)
 
 	if(${PYTHON_BINDINGS})
 		pybind11_add_module(rtde_control SHARED ${LIB_SOURCE_FILES} ${LIB_HEADER_FILES} ${LIB_URCL_HEADER_FILES} src/rtde_python_bindings.cpp)
