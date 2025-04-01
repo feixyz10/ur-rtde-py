@@ -234,6 +234,9 @@ PYBIND11_MODULE(rtde_control, m)
               py::arg("inertia") = std::vector<double>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
               py::call_guard<py::gil_scoped_release>());
   control.def("__repr__", [](const RTDEControlInterface &a) { return "<rtde_control.RTDEControlInterface>"; });
+  control.def("startContactDetection", &RTDEControlInterface::startContactDetection, py::arg("direction") = std::vector<double>{0, 0, 0, 0, 0, 0}, py::call_guard<py::gil_scoped_release>());
+  control.def("readContactDetection", &RTDEControlInterface::readContactDetection, py::call_guard<py::gil_scoped_release>());
+  control.def("stopContactDetection", &RTDEControlInterface::stopContactDetection, py::call_guard<py::gil_scoped_release>());
 }
 };  // namespace rtde_control
 
