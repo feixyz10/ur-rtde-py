@@ -95,7 +95,7 @@ getDebRev () {
 }
 
 
-gpgkey=$UR_RTDE_DEB_KEY
+gpgkey=$DEBPKG_KEY
 regex_key="^key"
 
 ur_rtde_DIR=$(getFolder)
@@ -105,6 +105,8 @@ extra=""
 if [[ -z $@ ]] ; then 
     extra=build
 fi
+
+has_run_c='false'
 
 for input in $@ $extra ; do
     cd $ur_rtde_DIR
@@ -123,14 +125,16 @@ for input in $@ $extra ; do
         if [[ -z $gpgkey ]] ; then 
             echo "A key for signing the package needs to be provided"
             echo "  key=B4227B543B90FFC4C26096A646A520C64CB3D1A9"
-            echo "  or export UR_RTDE_DEB_KEY with the key fingerprint"
+            echo "  or export DEBPKG_KEY with the key fingerprint"
             exit 1
         fi
         if [[ ! -e "../ur-rtde_$ur_rtde_VERSION.orig.tar.gz" ]] ; then
             git clean -fdX
             tar --exclude="./debian" --exclude="./.git" -zcvf "../ur-rtde_$ur_rtde_VERSION.orig.tar.gz" . > /dev/null
         fi
-        gbp dch -R -N "$(getDebRev)" --debian-branch=master --upstream-branch=master
+        if([[ $has_run_c == 'false' ]]) ; then
+            gbp dch -R -N "$(getDebRev)" --ignore-branch || exit 1
+        fi
         debuild --no-sign -S || exit 1
         debsign -k $gpgkey ../ur-rtde_$(getDebRev)_source.changes || exit 1
         dput ur-rtde ../ur-rtde_$(getDebRev)_source.changes || exit 1
@@ -138,7 +142,8 @@ for input in $@ $extra ; do
         exit 0
     elif [[ "$input"  == "-c" ]] ; then
         newVersion=$(getDebRev -n)
-        gbp dch -R -N "$newVersion" --debian-branch=master --upstream-branch=master || exit 1
+        gbp dch -R -N "$newVersion" --ignore-branch || exit 1
+        has_run_c='true'
 
     elif [[ "$input" =~ $regex_key ]] ; then
         gpgkey=${input#*=}

@@ -27,7 +27,7 @@
     - "[ -d build ] && rm -r build"
     - mkdir build
     - cd build
-    - cmake -DCODE:BOOL=OFF -DDOC:STRING=html -DWERROR:BOOL=${WERROR} ..
+    - cmake -DCODE:BOOL=OFF -DDOC:STRING=html ..
     - make doc
   artifacts:
     paths:
