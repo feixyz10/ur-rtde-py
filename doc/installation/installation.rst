@@ -33,10 +33,10 @@ Compatible Operating Systems
 ============================
 Currently tested on:
 
-*  Ubuntu 16.04 (Xenial Xerus)
-*  Ubuntu 18.04 (Bionic Beaver)
 *  Ubuntu 20.04 (Focal Fossa)
-*  macOS 10.14 (Mojave)
+*  Ubuntu 22.04 (Jammy Jellyfish)
+*  Ubuntu 24.04 (Noble Numbat)
+*  macOS 15 (Sequoia)
 *  Windows 10 Pro x64
 
 .. note::
