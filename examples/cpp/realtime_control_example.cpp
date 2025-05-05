@@ -30,7 +30,7 @@ std::vector<double> getCircleTarget(const std::vector<double> &pose, double time
 int main(int argc, char* argv[])
 {
   // Setup parameters
-  std::string robot_ip = "192.168.1.101";
+  std::string robot_ip = "localhost";
   double rtde_frequency = 500.0; // Hz
   double dt = 1.0 / rtde_frequency; // 2ms
   uint16_t flags = RTDEControlInterface::FLAG_VERBOSE | RTDEControlInterface::FLAG_USE_EXT_UR_CAP;
