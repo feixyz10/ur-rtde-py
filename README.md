@@ -18,6 +18,9 @@ A C++ interface for controlling and receiving data from a UR robot using the
 [Real-Time Data Exchange (RTDE)](https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/real-time-data-exchange-rtde-guide-22229/)
  interface of the robot. The interface can also be used with python, through the provided python bindings.
 
+> [!tip] Announcements
+> [PolyScopeX](https://www.universal-robots.com/products/polyscope-x/) is now supported, when using the [External Control UR Cap](https://github.com/UniversalRobots/Universal_Robots_ExternalControl_URCapX) for PolyScopeX :rocket:
+
 ### Key Features ###
  * Fast and lightweight interface for programming UR robots.
  * Uses the [Real-Time Data Exchange (RTDE)](https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/real-time-data-exchange-rtde-guide-22229/) of the robot.
@@ -96,11 +99,10 @@ If you only want to the use the Python interface, you can install ur_rtde throug
 ### Compatible Operating Systems ###
 Currently tested on:
 
-*  Ubuntu 16.04 (Xenial Xerus)
-*  Ubuntu 18.04 (Bionic Beaver)
 *  Ubuntu 20.04 (Focal Fossa)
 *  Ubuntu 22.04 (Jammy Jellyfish)
-*  macOS 10.14 (Mojave)
+*  Ubuntu 24.04 (Noble Numbat)
+*  macOS 15 (Sequoia)
 *  Windows 10 Pro x64
 
 ### Contact ###
