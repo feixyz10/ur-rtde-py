@@ -137,7 +137,8 @@ if(DEFINED WIN32)
 			include/ur_rtde/rtde_receive_interface_doc.h
 			include/ur_rtde/rtde_io_interface.h
 			include/ur_rtde/rtde_io_interface_doc.h
-			include/ur_rtde/robotiq_gripper.h)
+			include/ur_rtde/robotiq_gripper.h
+			include/ur_rtde/thread_utility.h)
 else()
 	set(LIB_SOURCE_FILES
 			src/robot_state.cpp
@@ -168,7 +169,8 @@ else()
 			include/ur_rtde/rtde_receive_interface_doc.h
 			include/ur_rtde/rtde_io_interface.h
 			include/ur_rtde/rtde_io_interface_doc.h
-			include/ur_rtde/robotiq_gripper.h)
+			include/ur_rtde/robotiq_gripper.h
+			include/ur_rtde/thread_utility.h)
 
 	set(LIB_URCL_HEADER_FILES
 			include/urcl/log.h
