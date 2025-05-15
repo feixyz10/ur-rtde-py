@@ -103,7 +103,7 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
     }
 
     // Only check if in remote on real robot or when not using the ExternalControl UR Cap.
-    if (!use_external_control_ur_cap_ && !(flags & FLAG_DIABLE_REMOTE_CONTROL_CHECK))
+    if (!use_external_control_ur_cap_ && !(flags & FLAG_DISABLE_REMOTE_CONTROL_CHECK))
     {
       // 192.168.56.101 is the CI ursim test ip address.
       if (hostname_ != "localhost" && hostname_ != "127.0.0.1" && hostname_ != "192.168.56.101")
