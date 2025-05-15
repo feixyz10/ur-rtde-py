@@ -45,6 +45,22 @@ namespace ur_rtde
 class RTDEReceiveInterface
 {
  public:
+ /**
+  * @brief Constructor for the RTDEReceiveInterface class
+  *
+  * Creates an interface to receive data from a Universal Robot.
+  *
+  * @param hostname The IP address or hostname of the robot.
+  * @param frequency The frequency at which RTDE data will be exchanged with the robot (-1.0 means use the robot's default frequency,
+  * 500Hz for e-Series and UR-Series, while its 125Hz for the CB-series).
+  * @param variables A vector of variable names to be monitored (empty vector means use all default variables).
+  * @param verbose Enable verbose output for debugging purposes.
+  * @param use_upper_range_registers Use the upper range registers for RTDE communication.
+  * @param rt_priority Real-time priority of the RTDEReceiveInterface thread (if supported by the OS).
+  *
+  * @note The list of available variables depends on the robot model and software version.
+  * Refer to the UR RTDE documentation for a complete list of available variables.
+  */
   RTDE_EXPORT explicit RTDEReceiveInterface(std::string hostname, double frequency = -1.0,
                                             std::vector<std::string> variables = {},
                                             bool verbose = false, bool use_upper_range_registers = false,

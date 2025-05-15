@@ -185,6 +185,50 @@ class AsyncOperationStatus
 class RTDEControlInterface
 {
  public:
+ /**
+  * @enum Flags
+  * @brief Configuration flags for the RTDEControlInterface
+  *
+  * These flags modify the behavior of the RTDEControlInterface when passed to the constructor.
+  * Multiple flags can be combined using bitwise OR ('|') operations.
+  *
+  * @var Flags::FLAG_UPLOAD_SCRIPT
+  * @brief Upload the default control URScript to the robot controller (enabled by default).
+  *
+  * @var Flags::FLAG_USE_EXT_UR_CAP
+  * @brief Use the External URCap interface for control.
+  *
+  * @var Flags::FLAG_VERBOSE
+  * @brief Enable verbose output for debugging purposes.
+  *
+  * @var Flags::FLAG_UPPER_RANGE_REGISTERS
+  * @brief Use the upper range registers for RTDE communication.
+  *
+  * @var Flags::FLAG_NO_WAIT
+  * @brief When you execute your ur_rtde application it will simply wait
+  * for you to press play on the controller in order to start, unless you
+  * use the FLAG_NO_WAIT, in which case the interface will be initialized,
+  * but cannot be used before the program is running on the controller. See
+  * the 'Use with ExternalControl UR Cap' example in the ur_rtde documentation.
+  *
+  * @var Flags::FLAG_CUSTOM_SCRIPT
+  * @brief The rtde control script is uploaded to the robot by default.
+  * However if you want to modify the script and execute it as a part
+  * of a program on the controller, you have the option of not uploading
+  * the default rtde control script. This means that ur_rtde expects a
+  * script to be running on the controller that you have set up manually
+  * eg. copied to the controller from USB or scp over the network. See
+  the 'Use with custom script' example in the ur_rtde documentation.
+  *
+  * @var Flags::FLAG_NO_EXT_FT
+  * @brief Do not use external force-torque sensor
+  *
+  * @var Flags::FLAG_DISABLE_REMOTE_CONTROL_CHECK
+  * @brief Disable the remote control check.
+  *
+  * @var Flags::FLAGS_DEFAULT
+  * @brief Default flags (only FLAG_UPLOAD_SCRIPT is enabled)
+  */
   enum Flags
   {
     FLAG_UPLOAD_SCRIPT = 0x01,
@@ -194,10 +238,27 @@ class RTDEControlInterface
     FLAG_NO_WAIT = 0x10,
     FLAG_CUSTOM_SCRIPT = 0x20,
     FLAG_NO_EXT_FT = 0x40,
-    FLAG_DIABLE_REMOTE_CONTROL_CHECK = 0x80,
+    FLAG_DISABLE_REMOTE_CONTROL_CHECK = 0x80,
     FLAGS_DEFAULT = FLAG_UPLOAD_SCRIPT
   };
-
+  
+  /**
+   * @brief Constructor for the RTDEControlInterface class
+   *
+   * Creates an interface to control and execute robot movements on a Universal Robot.
+   *
+   * @param hostname The IP address or hostname of the robot.
+   * @param frequency The frequency at which RTDE data will be exchanged with the robot (-1.0 means use the robot's default frequency,
+   * 500Hz for e-Series and UR-Series, while its 125Hz for the CB-series).
+   * @param flags Configuration flags that modify the behavior of the interface (see @ref Flags).
+   * @param ur_cap_port The port used for the External URCap interface (default: 50002)
+   * @param rt_priority Real-time priority of the RTDEControlInterface thread (if supported by the OS).
+   *
+   * @note The RTDEControlInterface is not thread-safe. The caller must provide
+   * protection using mutexes if needed.
+   *
+   * @see Flags for detailed information about available configuration flags
+   */
   RTDE_EXPORT explicit RTDEControlInterface(std::string hostname, double frequency = -1.0,
                                             uint16_t flags = FLAGS_DEFAULT, int ur_cap_port = 50002,
                                             int rt_priority = RT_PRIORITY_UNDEFINED);
