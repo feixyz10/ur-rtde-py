@@ -18,8 +18,11 @@ A C++ interface for controlling and receiving data from a UR robot using the
 [Real-Time Data Exchange (RTDE)](https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/real-time-data-exchange-rtde-guide-22229/)
  interface of the robot. The interface can also be used with python, through the provided python bindings.
 
-> [!tip] Announcements
-> [PolyScopeX](https://www.universal-robots.com/products/polyscope-x/) is now supported, when using the [External Control UR Cap](https://github.com/UniversalRobots/Universal_Robots_ExternalControl_URCapX) for PolyScopeX :rocket:
+>>> [!tip] Announcements
+* [PolyScopeX](https://www.universal-robots.com/products/polyscope-x/) is now supported, when using the [External Control UR Cap](https://github.com/UniversalRobots/Universal_Robots_ExternalControl_URCapX) for PolyScopeX :rocket:
+* From PolyScope 5.22 you can now control the robot joint torques directly and get the robot Mass matrix, Jacobian, Coriolis
+and centrifugal forces.
+>>>
 
 ### Key Features ###
  * Fast and lightweight interface for programming UR robots.
