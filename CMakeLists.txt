@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 if (POLICY CMP0074)
 	cmake_policy(SET CMP0074 NEW)
 endif()
@@ -37,7 +38,7 @@ if(${CODE})
 	set(CMAKE_CXX_STANDARD 11)
 	set(CMAKE_CXX_STANDARD_REQUIRED ON)
 	set(CMAKE_CXX_EXTENSIONS OFF)
-	
+
 	if(NOT DEFINED USE_WERROR OR "${USE_WERROR}" STREQUAL "")
 		set(USE_WERROR OFF)
 	endif()
@@ -206,8 +207,8 @@ if(${CODE})
 			${Boost_SYSTEM_LIBRARY}
 			${Boost_THREAD_LIBRARY}
 			${CMAKE_THREAD_LIBS_INIT})
-	set_target_properties(rtde PROPERTIES 
-			VERSION ${PROJECT_VERSION} 
+	set_target_properties(rtde PROPERTIES
+			VERSION ${PROJECT_VERSION}
 			SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR})
 
 	#target_compile_definitions(rtde PRIVATE BOOST_ASIO_NO_DEPRECATED)
@@ -316,7 +317,7 @@ if(${CODE})
 		add_executable(move_async_example examples/cpp/move_async_example.cpp)
 		target_include_directories(move_async_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
 		target_link_libraries(move_async_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY})
-	
+
 		add_executable(move_path_async_example examples/cpp/move_path_async_example.cpp)
 		target_include_directories(move_path_async_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
 		target_link_libraries(move_path_async_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY})
@@ -477,7 +478,7 @@ macro(getBoostLibraryList output list)
 			if(LIB)
 				list(APPEND ${output} "${LIB}")
 			endif()
-			
+
 
 			get_target_property(L_LIBS ${s} INTERFACE_LINK_LIBRARIES)
 			getBoostLibraryList(${output} "${L_LIBS}")
@@ -527,7 +528,7 @@ if(WINDOWS_INSTALLER)
     if(DEFINED MSVC)
         set(SLASH "\\\\")
 
-		############################### CPACK setup ######################################### 
+		############################### CPACK setup #########################################
         set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
         set(CPACK_PACKAGE_VENDOR "University of Southern Denmark")
         set(
@@ -538,7 +539,7 @@ if(WINDOWS_INSTALLER)
         set(CPACK_PACKAGE_INSTALL_DIRECTORY "ur_rtde")
         set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}${SLASH}LICENSE")
 		set(CPACK_PACKAGE_CONTACT "Anders Prier Lindvig (anpl@mmmi.sdu.dk)")
-		
+
 		set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
         set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
         set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
@@ -546,7 +547,7 @@ if(WINDOWS_INSTALLER)
 
         set(CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_NAME}-install)
 
-		############################### NSIS setup ######################################### 
+		############################### NSIS setup #########################################
         set(CPACK_NSIS_DISPLAY_NAME "${PROJECT_NAME}")
         set(CPACK_NSIS_PACKAGE_NAME "${PROJECT_NAME}")
         set(CPACK_NSIS_HELP_LINK ${CPACK_PACKAGE_HOMEPAGE_URL})
@@ -560,7 +561,7 @@ if(WINDOWS_INSTALLER)
         #    "${PROJECT_SOURCE_DIR}${SLASH}doc${SLASH}_static${SLASH}robots.png"  # needs to be 128x64.bmp file
         #)
 		#set(CPACK_NSIS_MUI_WELCOMEFINISHPAGE_BITMAP ${CPACK_NSIS_MUI_UNWELCOMEFINISHPAGE_BITMAP})
-		
+
         set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON) # When installing on a previus
                                                            # instalation ask to uninstall first
         set(CPACK_NSIS_UNINSTALL_NAME "ur_rtde_uninstall")
@@ -569,7 +570,7 @@ if(WINDOWS_INSTALLER)
 		# Make sure the system findes the project at installation
 		if(BUILD_STATIC)
 			set(CPACK_NSIS_MODIFY_PATH OFF) # Add the binary folder to PATH
-		else() 
+		else()
 			set(CPACK_NSIS_MODIFY_PATH ON) # Add the binary folder to PATH
 		endif()
 
@@ -592,27 +593,27 @@ if(WINDOWS_INSTALLER)
                 ";" "\n" CPACK_NSIS_EXTRA_UNSTALL_COMMANDS "${CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS}"
         )
 
-		############################### Package setup ######################################### 
+		############################### Package setup #########################################
 		get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS) # Get all components
-		
+
 		include(CPack)
         # Setup Install Groupes ####
-		cpack_add_component_group(UR_RTDE 
+		cpack_add_component_group(UR_RTDE
 			DISPLAY_NAME "ur_rtde"
             DESCRIPTION "Libraries for controlling UR robots"
             EXPANDED
             BOLD_TITLE
         )
-		cpack_add_component_group(MISC 
-			DISPLAY_NAME "Miscellaneous" 
+		cpack_add_component_group(MISC
+			DISPLAY_NAME "Miscellaneous"
 			DESCRIPTION "These are miscellaneous packages"
 		)
 		cpack_add_component_group(DEP
-			DISPLAY_NAME "Dependencies" 
+			DISPLAY_NAME "Dependencies"
 			DESCRIPTION "These are external dependencies for the ur_rtde"
 		)
-		cpack_add_component_group(DEVEL 
-			DISPLAY_NAME "Development Files" 
+		cpack_add_component_group(DEVEL
+			DISPLAY_NAME "Development Files"
 			DESCRIPTION "These are packages needed when you want to use ur_rtde for development"
         )
 
@@ -625,7 +626,7 @@ if(WINDOWS_INSTALLER)
 			DESCRIPTION "This package includes the files necessary to run a program that depends on ur_rtde"
 			GROUP UR_RTDE
 			DEPENDS ur_rtde_lib
-			INSTALL_TYPES Full 
+			INSTALL_TYPES Full
 			# DOWNLOADED ARCHIVE_FILE #Name_of_file_to_generate_for_download
 		)
 		cpack_add_component( ur_rtde_dev
@@ -633,7 +634,7 @@ if(WINDOWS_INSTALLER)
 			DESCRIPTION "This package includes the files necessary for development of a program that depends on ur_rtde"
 			GROUP UR_RTDE
 			DEPENDS ur_rtde_lib
-			INSTALL_TYPES Full 
+			INSTALL_TYPES Full
 			# DOWNLOADED ARCHIVE_FILE #Name_of_file_to_generate_for_download
 		)
         cpack_add_component( ur_rtde_cmake
@@ -641,16 +642,15 @@ if(WINDOWS_INSTALLER)
             DESCRIPTION "This package includes the files necessary for CMake to find and configure ur_rtde"
             GROUP UR_RTDE
 			DEPENDS ur_rtde_lib ur_rtde_dev
-            INSTALL_TYPES Full 
+            INSTALL_TYPES Full
 			# DOWNLOADED ARCHIVE_FILE #Name_of_file_to_generate_for_download
 		)
 		cpack_add_component( boost
 			DISPLAY_NAME "Boost"
 			DESCRIPTION "This package includes the files ur_rtde needs for runtime and development"
 			GROUP DEP
-			INSTALL_TYPES Full 
+			INSTALL_TYPES Full
 			# DOWNLOADED ARCHIVE_FILE #Name_of_file_to_generate_for_download
 		)
 	endif()
 endif()
-

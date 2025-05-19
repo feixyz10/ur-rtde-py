@@ -241,7 +241,7 @@ class RTDEControlInterface
     FLAG_DISABLE_REMOTE_CONTROL_CHECK = 0x80,
     FLAGS_DEFAULT = FLAG_UPLOAD_SCRIPT
   };
-  
+
   /**
    * @brief Constructor for the RTDEControlInterface class
    *
@@ -1138,7 +1138,68 @@ class RTDEControlInterface
    * with origin in the CoG and the axes aligned with the tool flange axes.
    */
   RTDE_EXPORT bool setTargetPayload(double mass, const std::vector<double> &cog = {},
-                                    const std::vector<double> &inertia = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
+    const std::vector<double> &inertia = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
+
+  /**
+   * @brief Set the joint torques of the robot.
+   *
+   * The torqueCommand will use one timestep no matter the speed scaling, similar to the sync() function. It
+   * needs to be called continuously at each robot times step. Otherwise the robot will return to position control
+   * mode.
+   *
+   * It compensates for gravity and uses, by default, our friction compensation. The friction compensation can be
+   * disabled by the optional argument friction_comp=False .
+   *
+   * @param torque vector of target torques to be commanded to the robot joints.
+   * @param friction_comp Enable internal friction compensation; Enabled by default
+   */
+  RTDE_EXPORT bool torqueCommand(const std::vector<double> &torque, bool friction_comp=true);
+
+  /**
+   * @brief Get mass matrix.
+   *
+   * @param q Robot joint position; Default uses the current robot joint positions
+   * @param include_rotors_inertia; also includes the inertia on the motor side of the gear; It is disabled by default.
+   * @returns The mass matrix
+   */
+  RTDE_EXPORT std::vector<double> getMassMatrix(const std::vector<double> &q = {}, bool include_rotors_inertia=false);
+
+  /**
+   * @brief Get the coriolis and centrifugal torques.
+   *
+   * @param q Robot joint position; Default uses the current robot joint positions
+   * @param qd Robot joint velocities; Default uses the current robot joint velocities.
+   */
+  RTDE_EXPORT std::vector<double> getCoriolisAndCentrifugalTorques(const std::vector<double> &q = {}, const std::vector<double> &qd = {});
+
+  /**
+   * @brief Get target joint accelerations.
+   *
+   * @returns List of the joints acceleration derived directly from the encoders.
+   * Please expect noise on the output.
+   */
+  RTDE_EXPORT std::vector<double> getTargetJointAccelerations();
+
+  /**
+   * @brief Get Jacobian matrix
+   *
+   * @param pos Joint space position; Default uses the robots current pose for the tool flange.
+   * @param tcp tcp offset; Default uses the active tcp offset
+
+   * @returns Return the Jacobian matrix.
+   */
+  RTDE_EXPORT std::vector<double> getJacobian(const std::vector<double> &pos = {}, const std::vector<double> &tcp = {});
+
+  /**
+   * @brief Get time-derivative Jacobian matrix
+   *
+   * @param pos Joint space position; Default uses the robot's current pose for the tool flange.
+   * @param vel Joint space velocity; Default uses the robot's current velocity of the tool flange.
+   * @param tcp; tcp offset; Default uses the active tcp offset.
+   *
+   * @returns Return the Jacobian matrix.
+   */
+  RTDE_EXPORT std::vector<double> getJacobianTimeDerivative(const std::vector<double> &pos = {}, const std::vector<double> &vel = {}, const std::vector<double> &tcp = {});
 
   // Unlocks a protective stop via the dashboard client.
   void unlockProtectiveStop();

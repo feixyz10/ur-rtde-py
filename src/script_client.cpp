@@ -139,16 +139,26 @@ bool ScriptClient::removeUnsupportedFunctions(std::string& ur_script)
           (major_control_version_ == major_version_needed && minor_control_version_ >= minor_version_needed) ||
           (major_control_version_ == extra_major_version_needed && minor_control_version_ >= extra_minor_version_needed))
       {
-        // Keep the line
-        if (additional_version_specified)
+        // Temporary hack to make PolyScopeX work while it does not support the torque_command
+        // and other associated commands jacobian, coriolis etc.
+        if (major_control_version_ == 10 && major_version_needed == 5 && minor_version_needed == 22)
         {
-          ur_script.erase(n, 10);
-          ur_script.insert(n, "          ");
+          // Erase the line
+          ur_script.erase(n, ur_script.find("\n", n) - n + 1);
         }
         else
         {
-          ur_script.erase(n, 5);
-          ur_script.insert(n, "     ");
+          // Keep the line
+          if (additional_version_specified)
+          {
+            ur_script.erase(n, 10);
+            ur_script.insert(n, "          ");
+          }
+          else
+          {
+            ur_script.erase(n, 5);
+            ur_script.insert(n, "     ");
+          }
         }
       }
       else

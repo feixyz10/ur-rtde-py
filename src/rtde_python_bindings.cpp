@@ -66,7 +66,7 @@ PYBIND11_MODULE(rtde_control, m)
       .value("FLAG_NO_WAIT", RTDEControlInterface::Flags::FLAG_NO_WAIT)
       .value("FLAG_CUSTOM_SCRIPT", RTDEControlInterface::Flags::FLAG_CUSTOM_SCRIPT)
       .value("FLAG_NO_EXT_FT", RTDEControlInterface::Flags::FLAG_NO_EXT_FT)
-      .value("FLAG_DIABLE_REMOTE_CONTROL_CHECK", RTDEControlInterface::Flags::FLAG_DIABLE_REMOTE_CONTROL_CHECK)
+      .value("FLAG_DISABLE_REMOTE_CONTROL_CHECK", RTDEControlInterface::Flags::FLAG_DISABLE_REMOTE_CONTROL_CHECK)
       .value("FLAGS_DEFAULT", RTDEControlInterface::Flags::FLAGS_DEFAULT)
       .export_values();
 
@@ -232,6 +232,23 @@ PYBIND11_MODULE(rtde_control, m)
   control.def("setTargetPayload", &RTDEControlInterface::setTargetPayload,
               py::arg("mass"), py::arg("cog") = std::vector<double>(),
               py::arg("inertia") = std::vector<double>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+              py::call_guard<py::gil_scoped_release>());
+  control.def("torqueCommand", &RTDEControlInterface::torqueCommand,
+              py::arg("torque"), py::arg("friction_comp") = true,
+              py::call_guard<py::gil_scoped_release>());
+  control.def("getMassMatrix", &RTDEControlInterface::getMassMatrix,
+              py::arg("q") = std::vector<double>(), py::arg("include_rotors_inertia") = false,
+              py::call_guard<py::gil_scoped_release>());
+  control.def("getCoriolisAndCentrifugalTorques", &RTDEControlInterface::getCoriolisAndCentrifugalTorques,
+              py::arg("q") = std::vector<double>(), py::arg("qd") = std::vector<double>(),
+              py::call_guard<py::gil_scoped_release>());
+  control.def("getTargetJointAccelerations", &RTDEControlInterface::getTargetJointAccelerations,
+              py::call_guard<py::gil_scoped_release>());
+  control.def("getJacobian", &RTDEControlInterface::getJacobian,
+              py::arg("pos") = std::vector<double>(), py::arg("tcp") = std::vector<double>(),
+              py::call_guard<py::gil_scoped_release>());
+  control.def("getJacobianTimeDerivative", &RTDEControlInterface::getJacobianTimeDerivative,
+              py::arg("pos") = std::vector<double>(), py::arg("vel") = std::vector<double>(), py::arg("tcp") = std::vector<double>(),
               py::call_guard<py::gil_scoped_release>());
   control.def("__repr__", [](const RTDEControlInterface &a) { return "<rtde_control.RTDEControlInterface>"; });
   control.def("startContactDetection", &RTDEControlInterface::startContactDetection, py::arg("direction") = std::vector<double>{0, 0, 0, 0, 0, 0}, py::call_guard<py::gil_scoped_release>());

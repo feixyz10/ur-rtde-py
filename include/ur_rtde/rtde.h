@@ -108,6 +108,12 @@ class RTDE
       STOP_CONTACT_DETECTION = 63,
       READ_CONTACT_DETECTION = 64,
       SET_TARGET_PAYLOAD = 65,
+      TORQUE_COMMAND = 66,
+      GET_MASS_MATRIX = 67,
+      GET_CORIOLIS_AND_CENTRIFUGAL_TORQUES = 68,
+      GET_TARGET_JOINT_ACCELERATIONS = 69,
+      GET_JACOBIAN = 70,
+      GET_JACOBIAN_TIME_DERIVATIVE = 71,
       WATCHDOG = 99,
       STOP_SCRIPT = 255
     };
@@ -134,7 +140,9 @@ class RTDE
       RECIPE_18 = 18,
       RECIPE_19 = 19,
       RECIPE_20 = 20,
-      RECIPE_21 = 21
+      RECIPE_21 = 21,
+      RECIPE_22 = 22,
+      RECIPE_23 = 23
     };
 
     RobotCommand() : type_(NO_CMD), recipe_id_(1)
@@ -144,6 +152,8 @@ class RTDE
     Type type_ = NO_CMD;
     std::uint8_t recipe_id_;
     std::int32_t async_;
+    std::int32_t friction_comp_;
+    std::int32_t include_rotors_inertia_;
     std::int32_t ft_rtde_input_enable_;
     std::int32_t reg_int_val_;
     double reg_double_val_;
