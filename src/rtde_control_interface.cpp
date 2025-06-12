@@ -3,6 +3,8 @@
 #include <ur_rtde/rtde_control_interface.h>
 #include <ur_rtde/rtde_utility.h>
 #include <ur_rtde/script_client.h>
+
+#include <cstddef>
 #if !defined(_WIN32) && !defined(__APPLE__)
 #include <urcl/script_sender.h>
 #endif
@@ -384,6 +386,18 @@ bool RTDEControlInterface::isConnected()
   return rtde_->isConnected();
 }
 
+bool RTDEControlInterface::waitForNextState()
+{
+  double start_timestamp, current_timestamp;
+  robot_state_->getStateData("timestamp", start_timestamp);
+  while (current_timestamp < start_timestamp + delta_time_)
+  {
+    robot_state_->getStateData("timestamp", current_timestamp);
+    std::this_thread::sleep_for(std::chrono::microseconds(50));
+  }
+  return true;
+}
+
 bool RTDEControlInterface::reconnect()
 {
   db_client_->connect();
@@ -575,36 +589,58 @@ bool RTDEControlInterface::setupRecipes(const double &frequency)
   uint32_t major_version = std::get<MAJOR_VERSION>(controller_version);
   uint32_t minor_version = std::get<MINOR_VERSION>(controller_version);
 
-  if (use_upper_range_registers_)
+  if ((major_version == 10 && minor_version >= 9) || major_version == 5 && minor_version >= 22)
   {
-    if ((major_version == 3 && minor_version >= 9) || (major_version == 5 && minor_version >= 3))
+    // For PolyScopeX or PolyScope 5.22 or above - add registers for use with direct torque control
+    if (use_upper_range_registers_)
     {
-      for (int i = 0; i <= 2; i++)
-        state_names_.emplace_back(outIntReg(i));
-      for (int i = 0; i <= 5; i++)
-        state_names_.emplace_back(outDoubleReg(i));
+      if (verbose_)
+        std::cerr
+            << "Warning! in order to use the functions getMassMatrix(), getJacobian(), getJacobianTimeDerivative() and "
+               "getCoriolisAndCentrifugalTorques, both the upper and lower ranges of RTDE registers are necessary!"
+            << std::endl;
     }
-    else
-    {
-      std::cerr << "Warning! The upper range of the integer output registers are only available on PolyScope versions "
-                   ">3.9 or >5.3"
-                << std::endl;
-    }
+    register_offset_ = 0;
+    for (int i = 0; i <= 2; i++)
+      state_names_.emplace_back(outIntReg(i));
+    for (size_t i = 0; i < 24; i++)
+      state_names_.emplace_back(outDoubleReg(i));
+    for (size_t i = 36; i < 48; i++)
+      state_names_.emplace_back(outDoubleReg(i));
   }
   else
   {
-    if (major_version >= 3 && minor_version >= 4)
+    if (use_upper_range_registers_)
     {
-      for (int i = 0; i <= 2; i++)
-        state_names_.emplace_back(outIntReg(i));
-      for (int i = 0; i <= 5; i++)
-        state_names_.emplace_back(outDoubleReg(i));
+      if ((major_version == 3 && minor_version >= 9) || (major_version == 5 && minor_version >= 3))
+      {
+        for (int i = 0; i <= 2; i++)
+          state_names_.emplace_back(outIntReg(i));
+        for (int i = 0; i <= 5; i++)
+          state_names_.emplace_back(outDoubleReg(i));
+      }
+      else
+      {
+        std::cerr << "Warning! The upper range of the integer output registers are only available on PolyScope versions "
+                     ">3.9 or >5.3"
+                  << std::endl;
+      }
     }
     else
     {
-      std::cerr
-          << "Warning! The lower range of the double output registers are only available on PolyScope versions >3.4"
-          << std::endl;
+      if (major_version >= 3 && minor_version >= 4)
+      {
+        for (int i = 0; i <= 2; i++)
+          state_names_.emplace_back(outIntReg(i));
+        for (int i = 0; i <= 5; i++)
+          state_names_.emplace_back(outDoubleReg(i));
+      }
+      else
+      {
+        std::cerr
+            << "Warning! The lower range of the double output registers are only available on PolyScope versions >3.4"
+            << std::endl;
+      }
     }
   }
 
@@ -718,23 +754,27 @@ bool RTDEControlInterface::setupRecipes(const double &frequency)
 
   // Recipe 20
   std::vector<std::string> set_target_payload_input = {inIntReg(0),    inDoubleReg(0), inDoubleReg(1), inDoubleReg(2),
-                                           inDoubleReg(3), inDoubleReg(4), inDoubleReg(5), inDoubleReg(6),
-                                           inDoubleReg(7), inDoubleReg(8), inDoubleReg(9)};
-  // Recipe 21 -- Reserved for SET_EXTERNAL_FORCE_TORQUE
-
-  // Recipe 22
-  std::vector<std::string> torque_cmd_input = {inIntReg(0),    inDoubleReg(0), inDoubleReg(1), inDoubleReg(2),
-                                           inDoubleReg(3), inDoubleReg(4), inDoubleReg(5), inIntReg(1)};
-
-  // Recipe 23
-  std::vector<std::string> get_jacobian_time_derivative = {inIntReg(0),    inDoubleReg(0), inDoubleReg(1), inDoubleReg(2),
-                                           inDoubleReg(3), inDoubleReg(4), inDoubleReg(5), inDoubleReg(6), inDoubleReg(7),
-                                           inDoubleReg(8), inDoubleReg(9), inDoubleReg(10), inDoubleReg(11), inDoubleReg(12),
-                                           inDoubleReg(13), inDoubleReg(14), inDoubleReg(15), inDoubleReg(16), inDoubleReg(17)};
+                                                       inDoubleReg(3), inDoubleReg(4), inDoubleReg(5), inDoubleReg(6),
+                                                       inDoubleReg(7), inDoubleReg(8), inDoubleReg(9)};
 
   rtde_->sendInputSetup(set_target_payload_input);
 
-  // Recipe 21 - external_force_torque should be last because its optional depending on flags
+  // Recipe 21
+  std::vector<std::string> torque_cmd_input = {inIntReg(0),    inDoubleReg(0), inDoubleReg(1), inDoubleReg(2),
+                                               inDoubleReg(3), inDoubleReg(4), inDoubleReg(5), inIntReg(1)};
+
+  rtde_->sendInputSetup(torque_cmd_input);
+
+  // Recipe 22
+  std::vector<std::string> get_jacobian_time_derivative = {
+      inIntReg(0),     inDoubleReg(0),  inDoubleReg(1),  inDoubleReg(2),  inDoubleReg(3),
+      inDoubleReg(4),  inDoubleReg(5),  inDoubleReg(6),  inDoubleReg(7),  inDoubleReg(8),
+      inDoubleReg(9),  inDoubleReg(10), inDoubleReg(11), inDoubleReg(12), inDoubleReg(13),
+      inDoubleReg(14), inDoubleReg(15), inDoubleReg(16), inDoubleReg(17)};
+
+  rtde_->sendInputSetup(get_jacobian_time_derivative);
+
+  // Recipe 23 - external_force_torque should be last because its optional depending on flags
   if (!no_ext_ft_)
   {
     std::vector<std::string> external_ft_input = {inIntReg(0), "external_force_torque"};
@@ -2159,7 +2199,7 @@ bool RTDEControlInterface::torqueCommand(const std::vector<double> &torque, bool
 {
   RTDE::RobotCommand robot_cmd;
   robot_cmd.type_ = RTDE::RobotCommand::Type::TORQUE_COMMAND;
-  robot_cmd.recipe_id_ = RTDE::RobotCommand::Recipe::RECIPE_22;
+  robot_cmd.recipe_id_ = RTDE::RobotCommand::Recipe::RECIPE_21;
   if (friction_comp)
     robot_cmd.friction_comp_ = 1;
   else
@@ -2172,7 +2212,7 @@ std::vector<double> RTDEControlInterface::getMassMatrix(const std::vector<double
 {
   RTDE::RobotCommand robot_cmd;
   robot_cmd.type_ = RTDE::RobotCommand::Type::GET_MASS_MATRIX;
-  robot_cmd.recipe_id_ = RTDE::RobotCommand::Recipe::RECIPE_22;
+  robot_cmd.recipe_id_ = RTDE::RobotCommand::Recipe::RECIPE_21;
   if (include_rotors_inertia)
     robot_cmd.include_rotors_inertia_ = 1;
   else
@@ -2186,17 +2226,18 @@ std::vector<double> RTDEControlInterface::getMassMatrix(const std::vector<double
   {
     if (robot_state_ != nullptr)
     {
+      // Wait for the next state to be received.
+      waitForNextState();
       std::vector<double> mass_matrix;
       // override the register offset, since we need both upper and lower rtde register ranges.
       int orig_register_offset_ = register_offset_;
       register_offset_ = 0;
-      // get first 24 registers from upper range.
-      for (size_t i=24; i < 48; i++)
+      // get first 24 registers from lower range.
+      for (size_t i = 0; i < 24; i++)
         mass_matrix.push_back(getOutputDoubleReg(i));
-      // get the last 12 registers from the upper part of the lower range.
-      for (size_t i=12; i < 24; i++)
+      // get the last 12 registers the upper range.
+      for (size_t i = 36; i < 48; i++)
         mass_matrix.push_back(getOutputDoubleReg(i));
-
       register_offset_ = orig_register_offset_;
       return mass_matrix;
     }
@@ -2211,7 +2252,8 @@ std::vector<double> RTDEControlInterface::getMassMatrix(const std::vector<double
   }
 }
 
-std::vector<double> RTDEControlInterface::getCoriolisAndCentrifugalTorques(const std::vector<double> &q, const std::vector<double> &qd)
+std::vector<double> RTDEControlInterface::getCoriolisAndCentrifugalTorques(const std::vector<double> &q,
+                                                                           const std::vector<double> &qd)
 {
   RTDE::RobotCommand robot_cmd;
   robot_cmd.type_ = RTDE::RobotCommand::Type::GET_CORIOLIS_AND_CENTRIFUGAL_TORQUES;
@@ -2227,7 +2269,7 @@ std::vector<double> RTDEControlInterface::getCoriolisAndCentrifugalTorques(const
   }
   else
   {
-    for (size_t i=0; i < 6; i++)
+    for (size_t i = 0; i < 6; i++)
       robot_cmd.val_.push_back(0);
   }
   if (sendCommand(robot_cmd))
@@ -2238,13 +2280,12 @@ std::vector<double> RTDEControlInterface::getCoriolisAndCentrifugalTorques(const
       // override the register offset, since we need both upper and lower rtde register ranges.
       int orig_register_offset_ = register_offset_;
       register_offset_ = 0;
-      // get first 24 registers from upper range.
-      for (size_t i=24; i < 48; i++)
+      // get first 24 registers from lower range.
+      for (size_t i = 0; i < 24; i++)
         coriolis_and_centrifugal_torques.push_back(getOutputDoubleReg(i));
-      // get the last 12 registers from the upper part of the lower range.
-      for (size_t i=12; i < 24; i++)
+      // get the last 12 registers the upper range.
+      for (size_t i = 36; i < 48; i++)
         coriolis_and_centrifugal_torques.push_back(getOutputDoubleReg(i));
-
       register_offset_ = orig_register_offset_;
       return coriolis_and_centrifugal_torques;
     }
@@ -2302,7 +2343,7 @@ std::vector<double> RTDEControlInterface::getJacobian(const std::vector<double> 
   }
   else
   {
-    for (size_t i=0; i < 6; i++)
+    for (size_t i = 0; i < 6; i++)
       robot_cmd.val_.push_back(0);
   }
 
@@ -2314,13 +2355,12 @@ std::vector<double> RTDEControlInterface::getJacobian(const std::vector<double> 
       // override the register offset, since we need both upper and lower rtde register ranges.
       int orig_register_offset_ = register_offset_;
       register_offset_ = 0;
-      // get first 24 registers from upper range.
-      for (size_t i=24; i < 48; i++)
+      // get first 24 registers from lower range.
+      for (size_t i = 0; i < 24; i++)
         jacobian.push_back(getOutputDoubleReg(i));
-      // get the last 12 registers from the upper part of the lower range.
-      for (size_t i=12; i < 24; i++)
+      // get the last 12 registers the upper range.
+      for (size_t i = 36; i < 48; i++)
         jacobian.push_back(getOutputDoubleReg(i));
-
       register_offset_ = orig_register_offset_;
       return jacobian;
     }
@@ -2335,11 +2375,13 @@ std::vector<double> RTDEControlInterface::getJacobian(const std::vector<double> 
   }
 }
 
-std::vector<double> RTDEControlInterface::getJacobianTimeDerivative(const std::vector<double> &pos, const std::vector<double> &vel, const std::vector<double> &tcp)
+std::vector<double> RTDEControlInterface::getJacobianTimeDerivative(const std::vector<double> &pos,
+                                                                    const std::vector<double> &vel,
+                                                                    const std::vector<double> &tcp)
 {
   RTDE::RobotCommand robot_cmd;
-  robot_cmd.type_ = RTDE::RobotCommand::Type::GET_JACOBIAN;
-  robot_cmd.recipe_id_ = RTDE::RobotCommand::Recipe::RECIPE_23;
+  robot_cmd.type_ = RTDE::RobotCommand::Type::GET_JACOBIAN_TIME_DERIVATIVE;
+  robot_cmd.recipe_id_ = RTDE::RobotCommand::Recipe::RECIPE_22;
 
   if (!pos.empty())
     robot_cmd.val_ = pos;
@@ -2353,7 +2395,7 @@ std::vector<double> RTDEControlInterface::getJacobianTimeDerivative(const std::v
   }
   else
   {
-    for (size_t i=0; i < 6; i++)
+    for (size_t i = 0; i < 6; i++)
       robot_cmd.val_.push_back(0);
   }
 
@@ -2364,7 +2406,7 @@ std::vector<double> RTDEControlInterface::getJacobianTimeDerivative(const std::v
   }
   else
   {
-    for (size_t i=0; i < 6; i++)
+    for (size_t i = 0; i < 6; i++)
       robot_cmd.val_.push_back(0);
   }
 
@@ -2376,13 +2418,12 @@ std::vector<double> RTDEControlInterface::getJacobianTimeDerivative(const std::v
       // override the register offset, since we need both upper and lower rtde register ranges.
       int orig_register_offset_ = register_offset_;
       register_offset_ = 0;
-      // get first 24 registers from upper range.
-      for (size_t i=24; i < 48; i++)
+      // get first 24 registers from lower range.
+      for (size_t i = 0; i < 24; i++)
         jacobian_dot.push_back(getOutputDoubleReg(i));
-      // get the last 12 registers from the upper part of the lower range.
-      for (size_t i=12; i < 24; i++)
+      // get the last 12 registers the upper range.
+      for (size_t i = 36; i < 48; i++)
         jacobian_dot.push_back(getOutputDoubleReg(i));
-
       register_offset_ = orig_register_offset_;
       return jacobian_dot;
     }
@@ -2488,9 +2529,12 @@ bool RTDEControlInterface::sendCommand(const RTDE::RobotCommand &cmd)
           cmd.type_ == RTDE::RobotCommand::Type::WATCHDOG || cmd.type_ == RTDE::RobotCommand::Type::GET_JOINT_TORQUES ||
           cmd.type_ == RTDE::RobotCommand::Type::TOOL_CONTACT || cmd.type_ == RTDE::RobotCommand::Type::GET_STEPTIME ||
           cmd.type_ == RTDE::RobotCommand::Type::GET_ACTUAL_JOINT_POSITIONS_HISTORY ||
-          cmd.type_ == RTDE::RobotCommand::Type::SET_EXTERNAL_FORCE_TORQUE || cmd.type_ == RTDE::RobotCommand::Type::TORQUE_COMMAND ||
-          cmd.type_ == RTDE::RobotCommand::Type::GET_MASS_MATRIX || cmd.type_ == RTDE::RobotCommand::Type::GET_CORIOLIS_AND_CENTRIFUGAL_TORQUES ||
-          cmd.type_ == RTDE::RobotCommand::Type::GET_TARGET_JOINT_ACCELERATIONS || cmd.type_ == RTDE::RobotCommand::Type::GET_JACOBIAN ||
+          cmd.type_ == RTDE::RobotCommand::Type::SET_EXTERNAL_FORCE_TORQUE ||
+          cmd.type_ == RTDE::RobotCommand::Type::TORQUE_COMMAND ||
+          cmd.type_ == RTDE::RobotCommand::Type::GET_MASS_MATRIX ||
+          cmd.type_ == RTDE::RobotCommand::Type::GET_CORIOLIS_AND_CENTRIFUGAL_TORQUES ||
+          cmd.type_ == RTDE::RobotCommand::Type::GET_TARGET_JOINT_ACCELERATIONS ||
+          cmd.type_ == RTDE::RobotCommand::Type::GET_JACOBIAN ||
           cmd.type_ == RTDE::RobotCommand::Type::GET_JACOBIAN_TIME_DERIVATIVE)
       {
         // Send command to the controller

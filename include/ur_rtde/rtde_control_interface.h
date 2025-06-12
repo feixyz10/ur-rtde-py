@@ -321,6 +321,11 @@ class RTDEControlInterface
   RTDE_EXPORT bool isConnected();
 
   /**
+   * @returns When the next state has been received
+   */
+  RTDE_EXPORT bool waitForNextState();
+
+  /**
    * @brief Used for waiting the rest of the control period, set implicitly as dt = 1 / frequency. A combination of
    * sleeping and spinning are used to achieve the lowest possible jitter. The function is especially useful for a
    * realtime control loop. NOTE: the function is to be used in combination with the initPeriod().

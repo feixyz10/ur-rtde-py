@@ -139,9 +139,8 @@ bool ScriptClient::removeUnsupportedFunctions(std::string& ur_script)
           (major_control_version_ == major_version_needed && minor_control_version_ >= minor_version_needed) ||
           (major_control_version_ == extra_major_version_needed && minor_control_version_ >= extra_minor_version_needed))
       {
-        // Temporary hack to make PolyScopeX work while it does not support the torque_command
-        // and other associated commands jacobian, coriolis etc.
-        if (major_control_version_ == 10 && major_version_needed == 5 && minor_version_needed == 22)
+        // The Direct torque control was introduced in PolyScopeX 10.9.0. Remove if the the version is below.
+        if (major_control_version_ == 10 && minor_control_version_ < 9 && major_version_needed == 5 && minor_version_needed == 22)
         {
           // Erase the line
           ur_script.erase(n, ur_script.find("\n", n) - n + 1);

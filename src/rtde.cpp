@@ -279,6 +279,20 @@ void RTDE::send(const RobotCommand &robot_cmd)
                       std::make_move_iterator(std_analog_output_1_packed.end()));
   }
 
+  if (robot_cmd.type_ == RobotCommand::TORQUE_COMMAND)
+  {
+    std::vector<char> friction_comp_packed = RTDEUtility::packInt32(robot_cmd.friction_comp_);
+    cmd_packed.insert(cmd_packed.end(), std::make_move_iterator(friction_comp_packed.begin()),
+                      std::make_move_iterator(friction_comp_packed.end()));
+  }
+  
+  if (robot_cmd.type_ == RobotCommand::GET_MASS_MATRIX)
+  {
+    std::vector<char> include_rotors_inertia_packed = RTDEUtility::packInt32(robot_cmd.include_rotors_inertia_);
+    cmd_packed.insert(cmd_packed.end(), std::make_move_iterator(include_rotors_inertia_packed.begin()),
+                      std::make_move_iterator(include_rotors_inertia_packed.end()));
+  }
+
   cmd_packed.insert(cmd_packed.begin(), robot_cmd.recipe_id_);
   std::string sent(cmd_packed.begin(), cmd_packed.end());
 
