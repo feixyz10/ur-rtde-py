@@ -390,10 +390,12 @@ bool RTDEControlInterface::waitForNextState()
 {
   double start_timestamp, current_timestamp;
   robot_state_->getStateData("timestamp", start_timestamp);
+  std::cout << "start_timestamp: " << start_timestamp << std::endl;
   while (current_timestamp < start_timestamp + delta_time_)
   {
     robot_state_->getStateData("timestamp", current_timestamp);
-    std::this_thread::sleep_for(std::chrono::microseconds(50));
+    std::cout << "current_timestamp: " << current_timestamp << std::endl;
+    std::this_thread::sleep_for(std::chrono::microseconds(100));
   }
   return true;
 }
@@ -589,7 +591,7 @@ bool RTDEControlInterface::setupRecipes(const double &frequency)
   uint32_t major_version = std::get<MAJOR_VERSION>(controller_version);
   uint32_t minor_version = std::get<MINOR_VERSION>(controller_version);
 
-  if ((major_version == 10 && minor_version >= 9) || major_version == 5 && minor_version >= 22)
+  if ((major_version == 10 && minor_version >= 9) || (major_version == 5 && minor_version >= 22))
   {
     // For PolyScopeX or PolyScope 5.22 or above - add registers for use with direct torque control
     if (use_upper_range_registers_)
