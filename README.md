@@ -1,12 +1,13 @@
 <div align="center">
 
-<img width=30% src="https://gitlab.com/sdurobotics/ur_rtde/-/raw/master/doc/_static/ur_rtde_logo.png">
+<img width=20% src="https://gitlab.com/sdurobotics/ur_rtde/-/raw/master/doc/_static/ur_rtde_logo.png">
 </div>
 &nbsp;
 <div align="center">
 
 [![build status](https://gitlab.com/sdurobotics/ur_rtde/badges/master/pipeline.svg)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
 [![pypi](https://badgen.net/pypi/v/ur_rtde)](https://pypi.org/project/ur-rtde/)
+[![DOI:10.1109/SII59315.2025.10871000](http://img.shields.io/badge/DOI-10.1109/SII59315.2025.10871000-00629B.svg)](https://doi.org/10.1109/SII59315.2025.10871000)
 <br>
 [![ps-3.12.1](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_3_12_1.svg?job=polyscope-3.12.1)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
 [![ps-3.15.8](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_3_15_8.svg?job=polyscope-3.15.8)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
@@ -40,19 +41,14 @@ A C++ interface for controlling and receiving data from a UR robot using the
 ### Documentation ###
 Documentation with installation and build instructions, examples and API resides at <https://sdurobotics.gitlab.io/ur_rtde/>
 
-### Citing ###
-If you use ur_rtde in your research, please cite:
+### How to Cite ###
+If you use ur_rtde in your research, please cite the [paper](https://doi.org/10.1109/SII59315.2025.10871000):
 
 ```
 @inproceedings{10871000,
   author={Lindvig, Anders Prier and Iturrate, Iñigo and Kindler, Uwe and Sloth, Christoffer},
   booktitle={2025 IEEE/SICE International Symposium on System Integration (SII)}, 
-  title={ur_rtde: An Interface for Controlling Universal Robots (UR) using the Real-Time Data Exchange (RTDE)}, 
-  year={2025},
-  volume={},
-  number={},
-  pages={1118-1123},
-  keywords={Protocols;Linux;C++ languages;System integration;Writing;Manipulators;Real-time systems;Libraries;Timing;MATLAB},
+  title={ur_rtde: An Interface for Controlling Universal Robots (UR) using the Real-Time Data Exchange(RTDE)}, year={2025}, pages={1118-1123}, keywords={Protocols;Linux;C++ languages;System integration;Writing;Manipulators;Real-time systems;Libraries;Timing;MATLAB},
   doi={10.1109/SII59315.2025.10871000}}
 
 ```
