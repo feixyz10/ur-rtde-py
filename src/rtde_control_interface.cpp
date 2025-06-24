@@ -388,14 +388,16 @@ bool RTDEControlInterface::isConnected()
 
 bool RTDEControlInterface::waitForNextState()
 {
-  double start_timestamp, current_timestamp;
+  double start_timestamp = 0.0;
+  double current_timestamp = 0.0;
   robot_state_->getStateData("timestamp", start_timestamp);
-  std::cout << "start_timestamp: " << start_timestamp << std::endl;
-  while (current_timestamp < start_timestamp + delta_time_)
+  if (current_timestamp < (start_timestamp + delta_time_))
   {
-    robot_state_->getStateData("timestamp", current_timestamp);
-    std::cout << "current_timestamp: " << current_timestamp << std::endl;
-    std::this_thread::sleep_for(std::chrono::microseconds(100));
+    while (current_timestamp <= (start_timestamp) + delta_time_)
+    {
+      robot_state_->getStateData("timestamp", current_timestamp);
+      std::this_thread::sleep_for(std::chrono::microseconds(50));
+    }
   }
   return true;
 }
@@ -586,7 +588,7 @@ bool RTDEControlInterface::reconnect()
 bool RTDEControlInterface::setupRecipes(const double &frequency)
 {
   // Setup output
-  state_names_ = {"robot_status_bits", "safety_status_bits", "runtime_state"};
+  state_names_ = {"timestamp", "robot_status_bits", "safety_status_bits", "runtime_state"};
   auto controller_version = rtde_->getControllerVersion();
   uint32_t major_version = std::get<MAJOR_VERSION>(controller_version);
   uint32_t minor_version = std::get<MINOR_VERSION>(controller_version);
@@ -2278,6 +2280,8 @@ std::vector<double> RTDEControlInterface::getCoriolisAndCentrifugalTorques(const
   {
     if (robot_state_ != nullptr)
     {
+      // Wait for the next state to be received.
+      waitForNextState();
       std::vector<double> coriolis_and_centrifugal_torques;
       // override the register offset, since we need both upper and lower rtde register ranges.
       int orig_register_offset_ = register_offset_;
@@ -2353,6 +2357,8 @@ std::vector<double> RTDEControlInterface::getJacobian(const std::vector<double> 
   {
     if (robot_state_ != nullptr)
     {
+      // Wait for the next state to be received.
+      waitForNextState();
       std::vector<double> jacobian;
       // override the register offset, since we need both upper and lower rtde register ranges.
       int orig_register_offset_ = register_offset_;
@@ -2416,6 +2422,8 @@ std::vector<double> RTDEControlInterface::getJacobianTimeDerivative(const std::v
   {
     if (robot_state_ != nullptr)
     {
+      // Wait for the next state to be received.
+      waitForNextState();
       std::vector<double> jacobian_dot;
       // override the register offset, since we need both upper and lower rtde register ranges.
       int orig_register_offset_ = register_offset_;
