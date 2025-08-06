@@ -1333,8 +1333,9 @@ $3.5    force_mode_set_damping(0.025)
                     executing_cmd = True
                 end
             end
-
-            sync()
+            if cmd != 66:
+              sync()
+            end
         end
         textmsg("RTDE Control Script Terminated")
 # NODE_CONTROL_LOOP_ENDS
