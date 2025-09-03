@@ -4,7 +4,7 @@ from rtde_control import RTDEControlInterface as RTDEControl
 from rtde_receive import RTDEReceiveInterface as RTDEReceive
 
 rtde_frequency = 500.0
-rtde_c = RTDEControl("localhost", rtde_frequency, RTDEControl.FLAG_VERBOSE | RTDEControl.FLAG_USE_EXT_UR_CAP)
+rtde_c = RTDEControl("localhost", rtde_frequency, RTDEControl.FLAG_VERBOSE | RTDEControl.FLAG_UPLOAD_SCRIPT)
 rtde_r = RTDEReceive("localhost", rtde_frequency)
 
 # --- Joint PD torque control ---
@@ -40,7 +40,7 @@ while True:
 
     # Apply torque control
     print("torque:", torque_target.tolist())
-    rtde_c.torqueCommand(torque_target.tolist())
+    rtde_c.directTorque(torque_target.tolist())
 
     rtde_c.waitPeriod(t_start)
     timecounter = timecounter + 0.002

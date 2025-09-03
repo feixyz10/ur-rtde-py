@@ -164,6 +164,9 @@ bool RTDEReceiveInterface::setupRecipes(const double& frequency)
     uint32_t bugfix_version = std::get<BUGFIX_VERSION>(controller_version);
 
     // Some RTDE variables depends on a minimum PolyScope version, check is performed here
+    if (major_version == 5 && minor_version >= 23)
+      variables_.emplace_back("actual_current_as_torque");
+
     if (major_version == 5 && minor_version >= 9)
       variables_.emplace_back("ft_raw_wrench");
 
@@ -263,7 +266,7 @@ void RTDEReceiveInterface::receiveCallback(std::atomic<bool> *stop_thread)
         std::this_thread::yield();
         std::this_thread::sleep_for(std::chrono::microseconds(100));
 #endif
-      }     
+      }
     }
     catch (const boost::system::system_error& e) { // catch the boost exception
       std::cerr << "RTDEReceiveInterface boost system Exception: (" << e.code() << ") " << e.what() << std::endl;
@@ -877,6 +880,20 @@ std::vector<double> RTDEReceiveInterface::getFtRawWrench()
   }
   else
     throw std::runtime_error("unable to get state data for specified key: ft_raw_wrench");
+}
+
+std::vector<double> RTDEReceiveInterface::getActualCurrentAsTorque()
+{
+  std::vector<double> actual_current_as_torque;
+  if (robot_state_->getStateData("actual_current_as_torque", actual_current_as_torque))
+  {
+    if (!actual_current_as_torque.empty())
+      return actual_current_as_torque;
+    else
+      throw std::runtime_error("getActualCurrentAsTorque is only supported on PolyScope versions >= 5.23.0");
+  }
+  else
+    throw std::runtime_error("unable to get state data for specified key: actual_current_as_torque");
 }
 
 double RTDEReceiveInterface::getSpeedScalingCombined()

@@ -593,9 +593,9 @@ bool RTDEControlInterface::setupRecipes(const double &frequency)
   uint32_t major_version = std::get<MAJOR_VERSION>(controller_version);
   uint32_t minor_version = std::get<MINOR_VERSION>(controller_version);
 
-  if ((major_version == 10 && minor_version >= 9) || (major_version == 5 && minor_version >= 22))
+  if ((major_version == 10 && minor_version >= 9) || (major_version == 5 && minor_version >= 23))
   {
-    // For PolyScopeX or PolyScope 5.22 or above - add registers for use with direct torque control
+    // For PolyScopeX or PolyScope 5.23 or above - add registers for use with direct torque control
     if (use_upper_range_registers_)
     {
       if (verbose_)
@@ -2199,10 +2199,10 @@ bool RTDEControlInterface::setTargetPayload(double mass, const std::vector<doubl
   return sendCommand(robot_cmd);
 }
 
-bool RTDEControlInterface::torqueCommand(const std::vector<double> &torque, bool friction_comp)
+bool RTDEControlInterface::directTorque(const std::vector<double> &torque, bool friction_comp)
 {
   RTDE::RobotCommand robot_cmd;
-  robot_cmd.type_ = RTDE::RobotCommand::Type::TORQUE_COMMAND;
+  robot_cmd.type_ = RTDE::RobotCommand::Type::DIRECT_TORQUE;
   robot_cmd.recipe_id_ = RTDE::RobotCommand::Recipe::RECIPE_21;
   if (friction_comp)
     robot_cmd.friction_comp_ = 1;
@@ -2540,7 +2540,7 @@ bool RTDEControlInterface::sendCommand(const RTDE::RobotCommand &cmd)
           cmd.type_ == RTDE::RobotCommand::Type::TOOL_CONTACT || cmd.type_ == RTDE::RobotCommand::Type::GET_STEPTIME ||
           cmd.type_ == RTDE::RobotCommand::Type::GET_ACTUAL_JOINT_POSITIONS_HISTORY ||
           cmd.type_ == RTDE::RobotCommand::Type::SET_EXTERNAL_FORCE_TORQUE ||
-          cmd.type_ == RTDE::RobotCommand::Type::TORQUE_COMMAND ||
+          cmd.type_ == RTDE::RobotCommand::Type::DIRECT_TORQUE ||
           cmd.type_ == RTDE::RobotCommand::Type::GET_MASS_MATRIX ||
           cmd.type_ == RTDE::RobotCommand::Type::GET_CORIOLIS_AND_CENTRIFUGAL_TORQUES ||
           cmd.type_ == RTDE::RobotCommand::Type::GET_TARGET_JOINT_ACCELERATIONS ||

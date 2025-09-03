@@ -459,6 +459,12 @@ class RTDEReceiveInterface
   RTDE_EXPORT std::vector<double> getFtRawWrench();
 
   /**
+   * @brief Get the actual joint currents converted to torques
+   * @returns actual joint currents converted to torque
+   */
+  RTDE_EXPORT std::vector<double> getActualCurrentAsTorque();
+
+  /**
    * @brief Get the payload of the robot in [kg]
    * @returns the payload in [kg]
    */

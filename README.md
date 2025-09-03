@@ -15,13 +15,13 @@
 [![ps-5.17.3](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_5_17_3.svg?job=polyscope-5.17.3)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
 </div>
 
-A C++ interface for controlling and receiving data from a UR robot using the 
+A C++ interface for controlling and receiving data from a UR robot using the
 [Real-Time Data Exchange (RTDE)](https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/real-time-data-exchange-rtde-guide-22229/)
  interface of the robot. The interface can also be used with python, through the provided python bindings.
 
 >>> [!tip] Announcements
 * [PolyScopeX](https://www.universal-robots.com/products/polyscope-x/) is now supported, when using the [External Control UR Cap](https://github.com/UniversalRobots/Universal_Robots_ExternalControl_URCapX) for PolyScopeX :rocket:
-* Control the robot joint torques directly and get the robot Mass matrix, Jacobian, Coriolis and centrifugal forces. (From PolyScope 5.22)
+* Control the robot joint torques directly using `directTorque()` and get the robot Mass matrix, Jacobian, Coriolis and centrifugal forces. (From PolyScope 5.23)
 >>>
 
 ### Key Features ###
@@ -34,20 +34,20 @@ A C++ interface for controlling and receiving data from a UR robot using the
  * Switchable register range (FieldBus / PLC [0..23] or external clients range [24..47])
  * Use it with the UR's [ExternalControl UR Cap](https://github.com/UniversalRobots/Universal_Robots_ExternalControl_URCap),
     download it [here](https://github.com/UniversalRobots/Universal_Robots_ROS_Driver/blob/master/ur_robot_driver/resources/externalcontrol-1.0.5.urcap) see
-    how to install it on the robot [here](https://github.com/UniversalRobots/Universal_Robots_ROS_Driver/blob/master/ur_robot_driver/doc/install_urcap_e_series.md). 
+    how to install it on the robot [here](https://github.com/UniversalRobots/Universal_Robots_ROS_Driver/blob/master/ur_robot_driver/doc/install_urcap_e_series.md).
     In order to setup ur_rtde for using it see [here](https://sdurobotics.gitlab.io/ur_rtde/examples/examples.html#use-with-externalcontrol-ur-cap).
  * Easy to install and setup.
- 
+
 ### Documentation ###
 Documentation with installation and build instructions, examples and API resides at <https://sdurobotics.gitlab.io/ur_rtde/>
 
 ### How to Cite ###
-If you use ur_rtde in your research, please cite the [paper](https://doi.org/10.1109/SII59315.2025.10871000):
+If you use ur_rtde in your research, please cite this [paper](https://doi.org/10.1109/SII59315.2025.10871000):
 
 ```
 @inproceedings{10871000,
   author={Lindvig, Anders Prier and Iturrate, Iñigo and Kindler, Uwe and Sloth, Christoffer},
-  booktitle={2025 IEEE/SICE International Symposium on System Integration (SII)}, 
+  booktitle={2025 IEEE/SICE International Symposium on System Integration (SII)},
   title={ur_rtde: An Interface for Controlling Universal Robots (UR) using the Real-Time Data Exchange(RTDE)}, year={2025}, pages={1118-1123}, keywords={Protocols;Linux;C++ languages;System integration;Writing;Manipulators;Real-time systems;Libraries;Timing;MATLAB},
   doi={10.1109/SII59315.2025.10871000}}
 

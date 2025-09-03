@@ -1146,9 +1146,9 @@ class RTDEControlInterface
     const std::vector<double> &inertia = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
 
   /**
-   * @brief Set the joint torques of the robot.
+   * @brief Set the joint torques of the robot using Direct Joint Torque Control.
    *
-   * The torqueCommand will use one timestep no matter the speed scaling, similar to the sync() function. It
+   * The directTorque function will use one timestep no matter the speed scaling, similar to the sync() function. It
    * needs to be called continuously at each robot times step. Otherwise the robot will return to position control
    * mode.
    *
@@ -1158,7 +1158,7 @@ class RTDEControlInterface
    * @param torque vector of target torques to be commanded to the robot joints.
    * @param friction_comp Enable internal friction compensation; Enabled by default
    */
-  RTDE_EXPORT bool torqueCommand(const std::vector<double> &torque, bool friction_comp=true);
+  RTDE_EXPORT bool directTorque(const std::vector<double> &torque, bool friction_comp=true);
 
   /**
    * @brief Get mass matrix.
