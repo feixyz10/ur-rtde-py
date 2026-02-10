@@ -22,3 +22,7 @@ debian/files
 debian/debhelper-build-stamp
 debian/tmp
 CMakeSettings.json
+
+# python build files
+build-setuptools
+src/ur_rtde.egg-info
