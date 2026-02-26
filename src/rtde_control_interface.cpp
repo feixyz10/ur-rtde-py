@@ -1941,11 +1941,20 @@ std::vector<double> RTDEControlInterface::getForwardKinematics(const std::vector
     robot_cmd.type_ = RTDE::RobotCommand::Type::GET_FORWARD_KINEMATICS_DEFAULT;
     robot_cmd.recipe_id_ = RTDE::RobotCommand::Recipe::RECIPE_4;
   }
-  else if (tcp_offset.empty() && !q.empty())
+  else if (q.empty() && !tcp_offset.empty())
+  {
+    robot_cmd.type_ = RTDE::RobotCommand::Type::GET_FORWARD_KINEMATICS_ARGS;
+    robot_cmd.recipe_id_ = RTDE::RobotCommand::Recipe::RECIPE_6;
+    std::vector<double> actual_q = getActualJointPositionsHistory();
+    robot_cmd.val_ = actual_q;
+    robot_cmd.val_.insert(robot_cmd.val_.end(), tcp_offset.begin(), tcp_offset.end());
+  }
+  else if (!q.empty() && (tcp_offset.empty() || RTDEUtility::isAllZero(tcp_offset)))
   {
     robot_cmd.type_ = RTDE::RobotCommand::Type::GET_FORWARD_KINEMATICS_ARGS;
     robot_cmd.recipe_id_ = RTDE::RobotCommand::Recipe::RECIPE_6;
     robot_cmd.val_ = q;
+    robot_cmd.val_.insert(robot_cmd.val_.end(), tcp_offset.begin(), tcp_offset.end());
   }
   else
   {
