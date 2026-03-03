@@ -416,14 +416,6 @@ bool RTDEControlInterface::reconnect()
   rtde_->negotiateProtocolVersion();
   versions_ = rtde_->getControllerVersion();
 
-  frequency_ = 125;
-  // If e-Series Robot set frequency to 500Hz
-  if (versions_.major > CB3_MAJOR_VERSION)
-    frequency_ = 500;
-
-  // Set delta time to be used by receiveCallback
-  delta_time_ = 1 / frequency_;
-
   // If user want to use upper range of RTDE registers, add the register offset in control script
   if (use_upper_range_registers_)
   {
