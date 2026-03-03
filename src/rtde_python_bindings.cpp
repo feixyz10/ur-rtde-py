@@ -424,7 +424,7 @@ PYBIND11_MODULE(script_client, m)
   m.doc() = "Script Client";
   py::class_<ScriptClient>(m, "ScriptClient")
       .def(py::init<std::string, uint32_t, uint32_t, int, bool>(), py::arg("hostname"),
-           py::arg("major_control_version"), py::arg("minor_control_version"), py::arg("port") = 30002,
+           py::arg("major_control_version"), py::arg("minor_control_version"), py::arg("port") = 30003,
            py::arg("verbose") = false)
       .def("connect", &ScriptClient::connect, py::call_guard<py::gil_scoped_release>())
       .def("isConnected", &ScriptClient::isConnected, py::call_guard<py::gil_scoped_release>())
