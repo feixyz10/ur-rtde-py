@@ -393,6 +393,7 @@ PYBIND11_MODULE(rtde_io, m)
       .def("reconnect", &RTDEIOInterface::reconnect, DOC(ur_rtde, RTDEIOInterface, reconnect),
            py::call_guard<py::gil_scoped_release>())
       .def("disconnect", &RTDEIOInterface::disconnect, py::call_guard<py::gil_scoped_release>())
+      .def("isConnected", &RTDEIOInterface::isConnected, py::call_guard<py::gil_scoped_release>())
       .def("setStandardDigitalOut", &RTDEIOInterface::setStandardDigitalOut,
            DOC(ur_rtde, RTDEIOInterface, setStandardDigitalOut), py::call_guard<py::gil_scoped_release>())
       .def("setToolDigitalOut", &RTDEIOInterface::setToolDigitalOut, DOC(ur_rtde, RTDEIOInterface, setToolDigitalOut),
