@@ -1148,45 +1148,15 @@ $5.23         write_output_float_reg(47, mass_matrix[5, 5])
         elif cmd == 68:
               # get_coriolis_and_centrifugal_torques
               dummy_op = 1
+
 $5.23         coriolis_and_centrifugal_torques = get_coriolis_and_centrifugal_torques()
-$5.23         # Use the lower range 0-23 for the first 24 values
-$5.23         write_output_float_reg(0, coriolis_and_centrifugal_torques[0, 0])
-$5.23         write_output_float_reg(1, coriolis_and_centrifugal_torques[1, 0])
-$5.23         write_output_float_reg(2, coriolis_and_centrifugal_torques[2, 0])
-$5.23         write_output_float_reg(3, coriolis_and_centrifugal_torques[3, 0])
-$5.23         write_output_float_reg(4, coriolis_and_centrifugal_torques[4, 0])
-$5.23         write_output_float_reg(5, coriolis_and_centrifugal_torques[5, 0])
-$5.23         write_output_float_reg(6, coriolis_and_centrifugal_torques[0, 1])
-$5.23         write_output_float_reg(7, coriolis_and_centrifugal_torques[1, 1])
-$5.23         write_output_float_reg(8, coriolis_and_centrifugal_torques[2, 1])
-$5.23         write_output_float_reg(9, coriolis_and_centrifugal_torques[3, 1])
-$5.23         write_output_float_reg(10, coriolis_and_centrifugal_torques[4, 1])
-$5.23         write_output_float_reg(11, coriolis_and_centrifugal_torques[5, 1])
-$5.23         write_output_float_reg(12, coriolis_and_centrifugal_torques[0, 2])
-$5.23         write_output_float_reg(13, coriolis_and_centrifugal_torques[1, 2])
-$5.23         write_output_float_reg(14, coriolis_and_centrifugal_torques[2, 2])
-$5.23         write_output_float_reg(15, coriolis_and_centrifugal_torques[3, 2])
-$5.23         write_output_float_reg(16, coriolis_and_centrifugal_torques[4, 2])
-$5.23         write_output_float_reg(17, coriolis_and_centrifugal_torques[5, 2])
-$5.23         write_output_float_reg(18, coriolis_and_centrifugal_torques[0, 3])
-$5.23         write_output_float_reg(19, coriolis_and_centrifugal_torques[1, 3])
-$5.23         write_output_float_reg(20, coriolis_and_centrifugal_torques[2, 3])
-$5.23         write_output_float_reg(21, coriolis_and_centrifugal_torques[3, 3])
-$5.23         write_output_float_reg(22, coriolis_and_centrifugal_torques[4, 3])
-$5.23         write_output_float_reg(23, coriolis_and_centrifugal_torques[5, 3])
-$5.23         # Use 'upper part 36-47' of the upper range for the last values
-$5.23         write_output_float_reg(36, coriolis_and_centrifugal_torques[0, 4])
-$5.23         write_output_float_reg(37, coriolis_and_centrifugal_torques[1, 4])
-$5.23         write_output_float_reg(38, coriolis_and_centrifugal_torques[2, 4])
-$5.23         write_output_float_reg(39, coriolis_and_centrifugal_torques[3, 4])
-$5.23         write_output_float_reg(40, coriolis_and_centrifugal_torques[4, 4])
-$5.23         write_output_float_reg(41, coriolis_and_centrifugal_torques[5, 4])
-$5.23         write_output_float_reg(42, coriolis_and_centrifugal_torques[0, 5])
-$5.23         write_output_float_reg(43, coriolis_and_centrifugal_torques[1, 5])
-$5.23         write_output_float_reg(44, coriolis_and_centrifugal_torques[2, 5])
-$5.23         write_output_float_reg(45, coriolis_and_centrifugal_torques[3, 5])
-$5.23         write_output_float_reg(46, coriolis_and_centrifugal_torques[4, 5])
-$5.23         write_output_float_reg(47, coriolis_and_centrifugal_torques[5, 5])
+$5.23         # Write to registers 0-5
+$5.23         write_output_float_reg(0, coriolis_and_centrifugal_torques[0])
+$5.23         write_output_float_reg(1, coriolis_and_centrifugal_torques[1])
+$5.23         write_output_float_reg(2, coriolis_and_centrifugal_torques[2])
+$5.23         write_output_float_reg(3, coriolis_and_centrifugal_torques[3])
+$5.23         write_output_float_reg(4, coriolis_and_centrifugal_torques[4])
+$5.23         write_output_float_reg(5, coriolis_and_centrifugal_torques[5])
         elif cmd == 69:
               # get_target_joint_accelerations
               dummy_op = 1
