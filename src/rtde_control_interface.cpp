@@ -600,8 +600,8 @@ bool RTDEControlInterface::setupRecipes(const double &frequency)
     {
       if (verbose_)
         std::cerr
-            << "Warning! in order to use the functions getMassMatrix(), getJacobian(), getJacobianTimeDerivative() and "
-               "getCoriolisAndCentrifugalTorques, both the upper and lower ranges of RTDE registers are necessary!"
+            << "Warning! in order to use the functions getMassMatrix(), getJacobian(), and getJacobianTimeDerivative(),"
+               " both the upper and lower ranges of RTDE registers are necessary!"
             << std::endl;
     }
     register_offset_ = 0;
@@ -2292,16 +2292,9 @@ std::vector<double> RTDEControlInterface::getCoriolisAndCentrifugalTorques(const
       // Wait for the next state to be received.
       waitForNextState();
       std::vector<double> coriolis_and_centrifugal_torques;
-      // override the register offset, since we need both upper and lower rtde register ranges.
-      int orig_register_offset_ = register_offset_;
-      register_offset_ = 0;
-      // get first 24 registers from lower range.
-      for (size_t i = 0; i < 24; i++)
+      // get first 6 registers from lower range.
+      for (size_t i = 0; i < 6; i++)
         coriolis_and_centrifugal_torques.push_back(getOutputDoubleReg(i));
-      // get the last 12 registers the upper range.
-      for (size_t i = 36; i < 48; i++)
-        coriolis_and_centrifugal_torques.push_back(getOutputDoubleReg(i));
-      register_offset_ = orig_register_offset_;
       return coriolis_and_centrifugal_torques;
     }
     else
