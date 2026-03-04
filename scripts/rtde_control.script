@@ -1000,10 +1000,9 @@ $5.9          ft_rtde_input_enable(enable, sensor_mass, sensor_measuring_offset,
               enable_external_ft_sensor(enable, sensor_mass, sensor_measuring_offset, sensor_cog)
               textmsg("enable_external_ft_sensor done")
         elif cmd == 58:
-              textmsg("get_actual_tool_flange_pose")
+              # get_actual_tool_flange_pose
               flange_pose = get_actual_tool_flange_pose()
               q_to_output_float_registers(0, flange_pose)
-              textmsg("get_actual_tool_flange_pose done")
         elif cmd == 59:
               textmsg("set_gravity")
               gravity_direction = [0, 0, 0]

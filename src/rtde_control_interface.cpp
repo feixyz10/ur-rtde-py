@@ -2536,6 +2536,7 @@ bool RTDEControlInterface::sendCommand(const RTDE::RobotCommand &cmd)
           cmd.type_ == RTDE::RobotCommand::Type::SET_EXTERNAL_FORCE_TORQUE ||
           cmd.type_ == RTDE::RobotCommand::Type::DIRECT_TORQUE ||
           cmd.type_ == RTDE::RobotCommand::Type::GET_MASS_MATRIX ||
+          cmd.type_ == RTDE::RobotCommand::Type::GET_ACTUAL_TOOL_FLANGE_POSE ||
           cmd.type_ == RTDE::RobotCommand::Type::GET_CORIOLIS_AND_CENTRIFUGAL_TORQUES ||
           cmd.type_ == RTDE::RobotCommand::Type::GET_TARGET_JOINT_ACCELERATIONS ||
           cmd.type_ == RTDE::RobotCommand::Type::GET_JACOBIAN ||
