@@ -91,6 +91,8 @@
     DOCKER_TLS_CERTDIR: ""
     CIBW_BEFORE_ALL_LINUX: "yum install -y wget && bash ci/build-boost.sh"
     CIBW_SKIP: "*-musllinux*"
+    CIBW_ENVIRONMENT_LINUX: BOOST_ROOT=/boost
+    CIBW_ENVIRONMENT_PASS_LINUX: BOOST_ROOT
   script:
     - curl -sSL https://get.docker.com/ | sh
     - python -m pip install cibuildwheel==3.4.0
