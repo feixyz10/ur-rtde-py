@@ -1,10 +1,9 @@
 #!/bin/bash -ex
 NCORES=$(($(grep -c ^processor /proc/cpuinfo) + 1))
-cd / 
-mkdir boost
-cd boost
-wget --no-check-certificate 'https://sourceforge.net/projects/boost/files/boost/1.76.0/boost_1_76_0.tar.bz2' 
-tar --strip-components=1 -xf boost_1_76_0.tar.bz2 
-./bootstrap.sh --prefix="/boost" --with-libraries=system,thread,program_options
+wget -c 'https://sourceforge.net/projects/boost/files/boost/1.68.0/boost_1_68_0.tar.bz2/download'
+tar xf download
+cd boost_1_68_0
+./bootstrap.sh --with-libraries=system,thread,program_options
 ./b2 -j${NCORES} cxxflags="-fPIC" runtime-link=static variant=release link=static install
-rm -rf boost_1_76_0.tar.bz2
+cd ..
+rm -rf download.bz2 boost_1_68_0
