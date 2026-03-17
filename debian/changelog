@@ -1,3 +1,105 @@
+ur-rtde (1.6.3-2) jammy; urgency=medium
+
+  * Jammy release
+
+ -- Kasper Høj Lorenzen <kalor@mmmi.sdu.dk>  Thu, 12 Mar 2026 09:11:47 +0100
+
+ur-rtde (1.6.3-1) noble; urgency=medium
+
+[ Kasper Høj Lorenzen ]
+  * updated .gitignore
+
+  [ Anders Prier Lindvig ]
+  * Changed the getForwardKinematics function to fix #348 and #76
+
+  [ Clemens Eppner ]
+  * Fix getCoriolisAndCentrifugalTorques()
+
+  [ Anders Prier Lindvig ]
+  * Fixed skipping of data package, this closes #267 and #342
+  * Removed hardcoded frequency in the event of a reconnect this fixes #344
+  * Added isConnected() function to RTDEIOInterface, this closes #346
+  * Changed default port for ScriptClient in python bindings #closes #323
+  * Fix for hanging call to getActualToolFlangePose(). Closes #255
+  * Added newer version of pybind11 and updated the minimum required CMake version. Fixes #353
+  * Release [1.6.3] Added the following:  
+  * Updated .gitignore  
+  * Changed the getForwardKinematics function to fix #348 and #76 (Thanks Paul)  
+  * Fix getCoriolisAndCentrifugalTorques() closes #347 (Thanks Clemens)  
+  * Fixed skipping of data package, this closes #267 and #342  
+  * Removed hardcoded frequency in the event of a reconnect this fixes #344  
+  * Added isConnected() function to RTDEIOInterface, this closes #346  
+  * Changed default port for ScriptClient in python bindings #closes #323  
+  * Fix for hanging call to getActualToolFlangePose(). Closes #255  
+  * Added newer version of pybind11 and updated the minimum required CMake version. Fixes #353
+  * Updated cibuildwheel to 3.4.0 for linux
+  * Potential fix for boost not found on newer cibw versions.
+  * Untar boost to current folder in cibuildwheel container.
+  * Less verbosity on boost unpacking + changed install dir for boost
+
+  -- Kasper Høj Lorenzen <kalor@mmmi.sdu.dk> Wed, 11 Mar 2026 16:20:00 +0200
+
+ur-rtde (1.6.2-1) noble; urgency=medium
+
+  [ Anders Prier Lindvig ]
+  * First changes needed for initial PolyScopeX support
+  * Added citing section to README.md
+
+  [ kasper Høj Lorenzen ]
+  * added FLAG_DIABLE_REMOTE_CONTROL_CHECK
+
+  [ David Cole ]
+  * Fix segmentation fault due to thread leak
+
+  [ kasper Høj Lorenzen ]
+  * added contact detection for python interface
+
+  [ Kasper Høj Lorenzen ]
+  * Runnable macOS pipeline.
+
+  [ Anders Prier Lindvig ]
+  * Should fix the documentation build on Ubuntu 24.04
+
+  [ Kasper Høj Lorenzen ]
+  * Fixed compatible operating systems documentation
+
+  [ Anders Prier Lindvig ]
+  * removed typo from example
+  * Corrected some examples
+  * Added support for PolyScopeX, using the ExternalControl URCap
+  * Release [1.6.1] Added the following: * Added support for PolyScopeX, using the ExternalControl URCap. 
+  * Updated compatible operating systems documentation. 
+  * Added contact detection for python interface, closes #315. 
+  * Fix segmentation fault due to thread leak, Thanks David. 
+  * Added FLAG_DIABLE_REMOTE_CONTROL_CHECK, see merge request !80 
+  * Fix setAnalogOutputVoltage, see merge request !77 
+  * The timespec tv_sec value is no longer ignored in the busy-wait loop, fixes #320. Thanks Teguh
+
+  [ ThomasDuvinage ]
+  * fix(include): add thread_utility.h to header files to avoid missing files when including rtde_control_interface
+
+  [ Anders Prier Lindvig ]
+  * Added Constructor API documentation for RTDEControlInterface and RTDEReceiveInterface.
+  * Corrected typo for FLAG_DISABLE_REMOTE_CONTROL_CHECK
+  * Added support for direct joint torque control of the robot from PolyScope 5.22
+  * Updated README
+  * Updated README
+  * Corrected the torque control implementation that fixes #334 and #333, it is WIP and further testing is still needed.
+  * Added missing parentheses for version comparison
+  * Updated README
+  * Fixed the getMassMatrix() and functions associated with the torque control, fixes #336 + added example of joint PD torque control, 
+    cartesian impedance control is coming soon
+  * Avoid using sync() when the torque_command is sent, fixes #337
+  * Release [1.6.2] Added the following:  
+  * Added support for direct joint torque control of the robot from PolyScope 5.23 using the directTorque() function.  
+  * Added function getActualCurrentAsTorque() for getting the actual joint currents converted to torques.  
+  * Added example of joint PD torque control.  
+  * Corrected typo for FLAG_DISABLE_REMOTE_CONTROL_CHECK.  
+  * Added Constructor API documentation for RTDEControlInterface and RTDEReceiveInterface.  
+  * Added thread_utility.h to header files to avoid missing files when including rtde_control_interface (Thanks Thomas).
+
+ -- Kasper Høj Lorenzen <kalor@mmmi.sdu.dk>  Thu, 25 Sep 2025 12:51:57 +0200
+  
 ur-rtde (1.6.0-4) focal; urgency=medium
 
   * Focal uploade

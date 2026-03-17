@@ -55,7 +55,7 @@ sub   2048g/389AA63E 2005-09-08
 
 add the following line to your .bashrc where the key is the key fingerprint from the above text
 ```
-export UR_RTDE_DEB_KEY=95BD83772644DD4F28B52C370F6E4CA6D8FC66D2
+export DEBPKG_KEY=95BD83772644DD4F28B52C370F6E4CA6D8FC66D2
 ```
 
 if you continue to work in the same terminal remember to:
@@ -65,7 +65,7 @@ source ~/.bashrc
 
 next step is to upload the key to the key server
 ```
-gpg --send-keys --keyserver keyserver.ubuntu.com $UR_RTDE_DEB_KEY
+gpg --send-keys --keyserver keyserver.ubuntu.com $DEBPKG_KEY
 ```
 
 ### Uploading a package to launchpad
