@@ -135,9 +135,8 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
 
   // Create a connection to the script server
   script_client_ = std::make_shared<ScriptClient>(hostname_, versions_.major, versions_.minor);
-  if (versions_.major < 10)
+  if ((versions_.major == 10 && versions_.minor >= 10) || versions_.major == 5)
   {
-    // For PolyScopeX we do not connect with the script client.
     script_client_->connect();
   }
 
@@ -196,7 +195,7 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
   // Clear command register
   sendClearCommand();
 
-  if (versions_.major < 10)
+  if((versions_.major == 10 && versions_.minor >= 10) || versions_.major == 5)
   {
     // We only upload the control script through the script client on PolyScope5.
     if (upload_script_)
@@ -215,7 +214,8 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
           std::cout << "A script was running on the controller, killing it!" << std::endl;
         // Stop the running script first
         stopScript();
-        db_client_->stop();
+        if (versions_.major < 10)
+          db_client_->stop();
 
         // Wait until terminated
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
