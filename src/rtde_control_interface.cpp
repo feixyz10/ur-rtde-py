@@ -195,9 +195,9 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
   // Clear command register
   sendClearCommand();
 
-  if((versions_.major == 10 && versions_.minor >= 10) || versions_.major == 5)
+  if((versions_.major == 10 && versions_.minor >= 10) || versions_.major < 10)
   {
-    // We only upload the control script through the script client on PolyScope5.
+    // Upload the control script on PolyScope 5, CB3 and PolyScopeX versions >= 10.10
     if (upload_script_)
     {
       if (!isProgramRunning())
