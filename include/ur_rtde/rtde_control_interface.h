@@ -1297,7 +1297,6 @@ class RTDEControlInterface
   double delta_time_;
   int register_offset_;
   std::shared_ptr<RTDE> rtde_;
-  ur_rtde::ThreadUtility th_;
   std::shared_ptr<DashboardClient> db_client_;
   std::shared_ptr<ScriptClient> script_client_;
   std::shared_ptr<RobotState> robot_state_;
@@ -1309,6 +1308,7 @@ class RTDEControlInterface
   Versions versions_{};
   std::string serial_number_;
   size_t no_bytes_avail_cnt_;
+  ur_rtde::ThreadUtility th_;
 };
 
 /**
