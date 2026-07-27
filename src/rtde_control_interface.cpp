@@ -135,7 +135,7 @@ RTDEControlInterface::RTDEControlInterface(std::string hostname, double frequenc
 
   // Create a connection to the script server
   script_client_ = std::make_shared<ScriptClient>(hostname_, versions_.major, versions_.minor);
-  if ((versions_.major == 10 && versions_.minor >= 10) || versions_.major == 5)
+  if ((versions_.major == 10 && versions_.minor >= 10) || versions_.major == 5 || versions_.major == 3)
   {
     script_client_->connect();
   }
