@@ -9,9 +9,9 @@
 [![pypi](https://badgen.net/pypi/v/ur_rtde)](https://pypi.org/project/ur-rtde/)
 [![DOI:10.1109/SII59315.2025.10871000](http://img.shields.io/badge/DOI-10.1109/SII59315.2025.10871000-00629B.svg)](https://doi.org/10.1109/SII59315.2025.10871000)
 <br>
-[![ps-3.12.1](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_3_12_1.svg?job=polyscope-3.12.1)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
+[![ps-3.14](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_3_14.svg?job=polyscope-3.14)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
 [![ps-3.15.8](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_3_15_8.svg?job=polyscope-3.15.8)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
-[![ps-5.5.1](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_5_5_1.svg?job=polyscope-5.5.1)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
+[![ps-5.5](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_5_5.svg?job=polyscope-5.5)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
 [![ps-5.17.3](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_5_17_3.svg?job=polyscope-5.17.3)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
 </div>
 
