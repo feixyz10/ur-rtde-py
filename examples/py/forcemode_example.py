@@ -1,4 +1,5 @@
 from rtde_control import RTDEControlInterface as RTDEControl
+import numpy as np
 
 rtde_c = RTDEControl("127.0.0.1")
 
@@ -7,8 +8,8 @@ selection_vector = [0, 0, 1, 0, 0, 0]
 wrench_down = [0, 0, -10, 0, 0, 0]
 wrench_up = [0, 0, 10, 0, 0, 0]
 force_type = 2
-limits = [2, 2, 1.5, 1, 1, 1]
-joint_q = [-1.54, -1.83, -2.28, -0.59, 1.60, 0.023]
+limits = [2, 2, 1.5, 1, 1, 1] 
+joint_q = [-np.pi/2, -np.pi/2, -np.pi/2, -np.pi/2, np.pi/2, 0.0]
 
 # Move to initial joint position with a regular moveJ
 rtde_c.moveJ(joint_q)
