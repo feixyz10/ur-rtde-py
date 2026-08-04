@@ -1,21 +1,17 @@
 Quick Start
 ***********
 
-You can use the ur_rtde interface in 3 different ways:
+You can use the ur_rtde interface in primarily two ways:
 
 **1.** The RTDEControlInterface automatically uploads a script to the robot controller. (Requires the remote control feature to be enabled on the robot).
 
 **2.** Install and use the External UR Cap on the robot controller see here, (Does not require remote control, but manual execution of the program on the controller).
-
-**3.** Instantiate a custom control script on the robot controller by manually copying it to the robot controller.
 
 **Option 1**. Is the default for PolyScope 3 (CB-series) and 5 (UR and e-Series) and does not require any additional configuration.
 
 **Option 2**. Requires some extra flags in the
 RTDEControlInterface constructor and installation of a the External Control UR Cap (This is the only option for PolyScopeX at the moment).
 See the guide here :ref:`Use the ExternalControl UR Cap <external_control_urcap>`.
-
-**Option 3**. Is not recommended in general unless you have a specific need that cannot be achieved with the two other options.
 
 For an overview of the architecture of ur_rtde see :ref:`Architecture <architecture>`.
 
