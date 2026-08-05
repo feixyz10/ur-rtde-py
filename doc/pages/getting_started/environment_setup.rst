@@ -91,6 +91,48 @@ Once the simulator starts, the terminal output includes:
 The easiest way to view the simulator is to just use the URL link provided. Otherwise,
 use a VNC client like Remmina on Ubuntu.
 
+The following images show the typical sequence for confirming the safety configuration and starting the robot. In each image,
+the action the user must perform is highlighted with a red box.
+
+.. image:: ../../_static/confirm_safety_configuration.png
+   :width: 600
+   :alt: Confirm safety configuration screen.
+
+.. raw:: html
+
+   <div style="margin-top: 1.5em;"></div>
+
+.. image:: ../../_static/press_power_off.png
+   :width: 600
+   :alt: Press 'Power off' on the robot screen.
+
+.. raw:: html
+
+   <div style="margin-top: 1.5em;"></div>
+
+.. image:: ../../_static/press_on.png
+   :width: 600
+   :alt: Press 'ON' on the robot screen.
+
+.. raw:: html
+
+   <div style="margin-top: 1.5em;"></div>
+
+.. image:: ../../_static/press_start.png
+   :width: 600
+   :alt: Press start on the robot screen.
+
+.. raw:: html
+
+   <div style="margin-top: 1.5em;"></div>
+
+.. image:: ../../_static/done_press_exit.png
+   :width: 600
+   :alt: Press exit on the robot screen.
+
+
+You are now ready to use the simulator and you can go to the 'Move' tab to visualize the robot.
+
 .. _real-robot-setup:
 
 Real robot setup
@@ -105,11 +147,15 @@ You can use the ur_rtde interface in primarily two ways:
 
 **2.** Install and use the External UR Cap on the robot controller see here, (Does not require remote control, but manual execution of the program on the controller).
 
-**Option 1**. Is the default for PolyScope 3 (CB-series) and 5 (UR and e-Series) and does not require any additional configuration.
+**Option 1**. Does not require any installation on the robot, only configuration.
 
 **Option 2**. Requires some extra flags in the
 RTDEControlInterface constructor and installation of a the External Control UR Cap (This is the only option for PolyScopeX at the moment).
 See the guide here :ref:`Use the ExternalControl UR Cap <external_control_urcap>`.
+
+
+Option 1 - Remote control
+-------------------------
 
 .. tabs::
 
@@ -129,11 +175,6 @@ See the guide here :ref:`Use the ExternalControl UR Cap <external_control_urcap>
 
    .. group-tab:: PolyScope 5
 
-      There are two ways the client library can be enabled to send command to the robot.
-
-      - **Remote control**: There the full control is given to the client library and enables it to e.g. power on and off, brake release, load PolyScope programs and send URScript programs directly to the controller.
-      - **External Control URCap**: There the control to power on, off and start programs etc. still remains on the teach pendant. The External Control URCap injects the needed URScript code from the client library. This also makes it possible to combine the use of the client library and other PolyScope program nodes, like standard moves or other third-party URCaps.
-
       **Enable remote control:**
 
       #. Go to the hamburger menu -> settings.
@@ -152,7 +193,7 @@ See the guide here :ref:`Use the ExternalControl UR Cap <external_control_urcap>
       #. Go to the hamburger menu -> settings.
       #. Go to Security -> Services.
       #. Unlock the menu using the admin password.
-      #. Enable the Dashboard Server, Primary Client Interface and Real-Time Data Exchange (RTDE) interfaces.
+      #. Enable the Dashboard Server, Primary and Secondary Client Interface, Real-time Interface and Real-Time Data Exchange (RTDE) interfaces.
       #. Lock the menu and press exit.
 
       .. image:: https://docs.universal-robots.com/Universal_Robots_ROS2_Documentation/_images/services_polyscope5.png
@@ -161,8 +202,44 @@ See the guide here :ref:`Use the ExternalControl UR Cap <external_control_urcap>
 
    .. group-tab:: CB3
 
-      CB3 robots can directly be used with the ur_client_library. No special preparation is needed.
+      CB3 robots can directly be used with the ur_rtde. No special preparation is needed.
 
+Option 2 - External Control UR Cap
+----------------------------------
+
+.. tabs::
+
+   .. group-tab:: PolyScope X
+
+      **Enable services:**
+
+      #. Go to the hamburger menu -> settings.
+      #. Go to Security -> Services.
+      #. Unlock the menu using the admin password.
+      #. Enable the Primary Client Interface and Secondary Client Interface, Real-time Interface and Real-Time Data Exchange (RTDE) interfaces.
+      #. Lock the menu and press exit.
+
+      .. image:: https://docs.universal-robots.com/Universal_Robots_ROS2_Documentation/_images/services_polyscopex.png 
+         :width: 600
+         :alt: Screenshot from PolyScope X screen.
+
+   .. group-tab:: PolyScope 5
+
+      **If using PolyScope 5.10 or greater: Enable services**
+
+      #. Go to the hamburger menu -> settings.
+      #. Go to Security -> Services.
+      #. Unlock the menu using the admin password.
+      #. Enable the Dashboard Server, Primary and Secondary Client Interface, Real-time Interface and Real-Time Data Exchange (RTDE) interfaces.
+      #. Lock the menu and press exit.
+
+      .. image:: https://docs.universal-robots.com/Universal_Robots_ROS2_Documentation/_images/services_polyscope5.png
+            :width: 600
+            :alt: Screenshot from PolyScope 5.xx services menu.
+
+   .. group-tab:: CB3
+
+      CB3 robots can directly be used with the ur_rtde. No special preparation is needed.
 
 Recommended checks
 ------------------

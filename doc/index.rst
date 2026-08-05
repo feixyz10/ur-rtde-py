@@ -18,22 +18,22 @@ In this documentation
 
 ..  grid:: 1 1 2 2
 
-   ..  grid-item:: :doc:`🚀 Getting started <pages/getting_started/index>`
+   ..  grid-item:: :doc:`Getting started <pages/getting_started/index>`
 
        **Start here**: a hands-on introduction to ur_rtde for new users
 
-   ..  grid-item:: :doc:`💻 Code Examples <pages/examples/index>`
+   ..  grid-item:: :doc:`Code Examples <pages/examples/index>`
 
        **Ready-to-run C++ and Python scripts**  for common robot control tasks.
 
 .. grid:: 1 1 2 2
    :reverse:
 
-   .. grid-item:: :doc:`📚 Reference <pages/reference/index>`
+   .. grid-item:: :doc:`Reference <pages/reference/index>`
 
       **Technical information** - specifications, APIs
 
-   .. grid-item:: :doc:`🧠 Core Concepts & System Architecture <pages/explanation/index>`
+   .. grid-item:: :doc:`Core Concepts & System Architecture <pages/explanation/index>`
 
       **Foundational knowledge** on RTDE timing, interface design, and OS configuration.
 

@@ -1,5 +1,6 @@
-💻 Code Examples
-****************
+Code Examples
+*************
+
 In this section you will find ready-to-run C++ and Python scripts for common robot control tasks.
 
 .. warning::
@@ -7,15 +8,9 @@ In this section you will find ready-to-run C++ and Python scripts for common rob
    to execute on the robot. When in doubt, always use the simulator provided by Universal Robots.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   record_data_example
-   move_async_example
-   move_until_contact
-   forcemode_example
-   servoj_example
-   speedj_example
-   move_path_with_blend_example
-   io_example
-   robotiq_gripper_example
-   jog_example
+   basic_motion/index
+   high_frequency_servoing/index
+   force_torque_control/index
+   io_control/index
