@@ -14,6 +14,7 @@ std::unordered_map<std::string, rtde_type_variant_> RobotState::state_types_ {
     { "actual_qd", std::vector<double>() },
     { "actual_qdd", std::vector<double>() },
     { "actual_current", std::vector<double>() },
+    { "actual_current_as_torque", std::vector<double>() },
     { "actual_moment", std::vector<double>() },
     { "joint_control_output", std::vector<double>() },
     { "actual_TCP_pose", std::vector<double>() },

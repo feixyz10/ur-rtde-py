@@ -2200,16 +2200,38 @@ bool RTDEControlInterface::setTargetPayload(double mass, const std::vector<doubl
   return sendCommand(robot_cmd);
 }
 
-bool RTDEControlInterface::directTorque(const std::vector<double> &torque, bool friction_comp)
+bool RTDEControlInterface::directTorque(const std::vector<double> &torque, const std::vector<double> &viscous_scale, const std::vector<double> &coulomb_scale)
 {
   RTDE::RobotCommand robot_cmd;
   robot_cmd.type_ = RTDE::RobotCommand::Type::DIRECT_TORQUE;
-  robot_cmd.recipe_id_ = RTDE::RobotCommand::Recipe::RECIPE_21;
-  if (friction_comp)
-    robot_cmd.friction_comp_ = 1;
+  robot_cmd.recipe_id_ = RTDE::RobotCommand::Recipe::RECIPE_22;
+  if (!torque.empty())
+    robot_cmd.val_ = torque;
   else
-    robot_cmd.friction_comp_ = 0;
-  robot_cmd.val_ = torque;
+    robot_cmd.val_ = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+  // if (!viscous_scale.empty())
+  // {
+  //   for (const auto &val : viscous_scale)
+  //     robot_cmd.val_.push_back(val);
+  // }
+  // else
+  // {
+  //   for (size_t i = 0; i < 6; i++)
+  //     robot_cmd.val_.push_back(0.0);
+  // }
+
+  // if (!coulomb_scale.empty())
+  // {
+  //   for (const auto &val : coulomb_scale)
+  //     robot_cmd.val_.push_back(val);
+  // }
+  // else
+  // {
+  //   for (size_t i = 0; i < 6; i++)
+  //     robot_cmd.val_.push_back(0.0);
+  // }
+  
   return sendCommand(robot_cmd);
 }
 

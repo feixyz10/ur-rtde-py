@@ -234,7 +234,9 @@ PYBIND11_MODULE(rtde_control, m)
               py::arg("inertia") = std::vector<double>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
               py::call_guard<py::gil_scoped_release>());
   control.def("directTorque", &RTDEControlInterface::directTorque,
-              py::arg("torque"), py::arg("friction_comp") = true,
+              py::arg("torque"),
+              py::arg("viscous_scale") = std::vector<double>{0.9, 0.9, 0.8, 0.9, 0.9, 0.9},
+              py::arg("coulomb_scale") = std::vector<double>{0.8, 0.8, 0.7, 0.8, 0.8, 0.8},
               py::call_guard<py::gil_scoped_release>());
   control.def("getMassMatrix", &RTDEControlInterface::getMassMatrix,
               py::arg("q") = std::vector<double>(), py::arg("include_rotors_inertia") = false,

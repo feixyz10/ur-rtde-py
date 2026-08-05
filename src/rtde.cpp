@@ -638,11 +638,6 @@ boost::system::error_code RTDE::receiveData(std::shared_ptr<RobotState> &robot_s
 
         robot_state->unlockUpdateStateMutex();
       }
-      else
-      {
-        if (verbose_)
-          std::cout << "skipping package(2)" << std::endl;
-      }
     }
     else
     {

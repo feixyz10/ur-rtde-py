@@ -21,7 +21,7 @@ A C++ interface for controlling and receiving data from a UR robot using the
 
 >>> [!tip] Announcements
 * [PolyScopeX](https://www.universal-robots.com/products/polyscope-x/) is now supported, when using the [External Control UR Cap](https://github.com/UniversalRobots/Universal_Robots_ExternalControl_URCapX) for PolyScopeX :rocket:
-* Control the robot joint torques directly using `directTorque()` and get the robot Mass matrix, Jacobian, Coriolis and centrifugal forces. (From PolyScope 5.23)
+* Control the robot joint torques directly using `directTorque()` and get the robot Mass matrix, Jacobian, Coriolis and centrifugal forces. (From PolyScope 5.26)
 >>>
 
 ### Key Features ###

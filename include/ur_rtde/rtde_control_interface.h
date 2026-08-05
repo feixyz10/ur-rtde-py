@@ -1151,17 +1151,24 @@ class RTDEControlInterface
   /**
    * @brief Set the joint torques of the robot using Direct Joint Torque Control.
    *
-   * The directTorque function will use one timestep no matter the speed scaling, similar to the sync() function. It
-   * needs to be called continuously at each robot times step. Otherwise the robot will return to position control
-   * mode.
+   * Direct Joint Torque Control enables low-level torque control. Sets the target torque for all robot joints at 500Hz. 
+   * This function must be called continuously at each robot time step; otherwise, the robot will return to position 
+   * control mode. The function always compensates for gravity, meaning that the provided target torque should 
+   * NOT include gravity compensation.
+   * 
+   * * This function is an advanced low-level function, as it bypasses many of the compliance features, which means it needs to be used with care.
+   * * You are responsible for keeping the robot within safety limits. If the robot violates these limits, it will result in a violation and the robot will stop.
+   * * It uses one timestep regardless of speed scaling, similar to sync().
+   * * If not called every timestep, the robot will revert to position control mode.
+   * * get_target_joint_accelerations() will return zeros when using direct_torque(), as there is no commanded target acceleration in this mode. Please use get_actual_joint_accelerations() instead, as these values are derived from the encoders.
+   * * When returning to position control mode, the robot arm needs to receive a command indicating how to continue the movement or stop. This can be done, for example, by using speedj() to continue moving or stopj() to make it stop.
    *
-   * It compensates for gravity and uses, by default, our friction compensation. The friction compensation can be
-   * disabled by the optional argument friction_comp=False .
-   *
-   * @param torque vector of target torques to be commanded to the robot joints.
-   * @param friction_comp Enable internal friction compensation; Enabled by default
+   * @param torque vector of target joint torques (Nm) to be commanded to the robot joints.
+   * @param viscous_scale (Optional) A vector where you can define the scale of viscous compensation from the friction model, within the range [0-1]. If not provided, the default scale will be [0.9, 0.9, 0.8, 0.9, 0.9, 0.9].
+   * @param coulomb_scale: (Optional) A vector where you can define the scale of Coulomb compensation from the friction model, within the range [0-1]. If not provided, the default scale will be [0.8, 0.8, 0.7, 0.8, 0.8, 0.8].
+   * @returns true if the command was successfully sent to the robot, false otherwise.
    */
-  RTDE_EXPORT bool directTorque(const std::vector<double> &torque, bool friction_comp=true);
+  RTDE_EXPORT bool directTorque(const std::vector<double> &torque, const std::vector<double> &viscous_scale = {0.9, 0.9, 0.8, 0.9, 0.9, 0.9}, const std::vector<double> &coulomb_scale = {0.8, 0.8, 0.7, 0.8, 0.8, 0.8});
 
   /**
    * @brief Get mass matrix.
