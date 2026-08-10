@@ -2210,27 +2210,27 @@ bool RTDEControlInterface::directTorque(const std::vector<double> &torque, const
   else
     robot_cmd.val_ = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-  // if (!viscous_scale.empty())
-  // {
-  //   for (const auto &val : viscous_scale)
-  //     robot_cmd.val_.push_back(val);
-  // }
-  // else
-  // {
-  //   for (size_t i = 0; i < 6; i++)
-  //     robot_cmd.val_.push_back(0.0);
-  // }
+  if (!viscous_scale.empty())
+  {
+    for (const auto &val : viscous_scale)
+      robot_cmd.val_.push_back(val);
+  }
+  else
+  {
+    for (size_t i = 0; i < 6; i++)
+      robot_cmd.val_.push_back(0.0);
+  }
 
-  // if (!coulomb_scale.empty())
-  // {
-  //   for (const auto &val : coulomb_scale)
-  //     robot_cmd.val_.push_back(val);
-  // }
-  // else
-  // {
-  //   for (size_t i = 0; i < 6; i++)
-  //     robot_cmd.val_.push_back(0.0);
-  // }
+  if (!coulomb_scale.empty())
+  {
+    for (const auto &val : coulomb_scale)
+      robot_cmd.val_.push_back(val);
+  }
+  else
+  {
+    for (size_t i = 0; i < 6; i++)
+      robot_cmd.val_.push_back(0.0);
+  }
   
   return sendCommand(robot_cmd);
 }
