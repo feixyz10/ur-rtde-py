@@ -131,7 +131,8 @@ the action the user must perform is highlighted with a red box.
    :alt: Press exit on the robot screen.
 
 
-You are now ready to use the simulator and you can go to the 'Move' tab to visualize the robot.
+You are now ready to use the simulator and you can go to the 'Move' tab to visualize the robot. And 
+continue to :ref:`Quick Start <quick_start>`
 
 .. _real-robot-setup:
 
@@ -247,4 +248,6 @@ Recommended checks
 1. Verify that the robot controller and the computer running ur_rtde are on the same network.
 2. Confirm that the robot IP address is known and reachable from the host machine.
 3. Make sure the robot is in remote control mode when using the default RTDE control workflow.
-4. If you are using the External Control UR Cap, install it on the robot controller and configure it for the correct host IP address.
+4. If you are using the External Control UR Cap, install it on the robot controller and configure
+   it for the correct host IP address. If you have a firewall in place make sure it allows connection
+   from the robot on the configured port.

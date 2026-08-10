@@ -44,7 +44,7 @@ breathe_projects = {"@PROJECT_NAME@": "@DOXY_OUTPUT_DIR@/xml"}
 breathe_show_define_initializer = False
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = []
+templates_path = ['@DOC_SRC@/_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -109,7 +109,8 @@ html_theme_options = {
     "repository_url": "https://gitlab.com/sdurobotics/ur_rtde",
     "use_repository_button": True,
     "show_toc_level": 3,
-    "use_sidenotes": True
+    "use_sidenotes": True,
+    "navbar_persistent": []
 }
 
 html_css_files = ["custom.css"]

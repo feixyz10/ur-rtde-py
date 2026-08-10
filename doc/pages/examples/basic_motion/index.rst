@@ -7,7 +7,8 @@ asynchronous motion with progress monitoring, jogging, and data recording during
 .. toctree::
    :maxdepth: 1
 
-   ../record_data_example
-   ../move_async_example
-   ../move_path_with_blend_example
-   ../jog_example
+   basic_move
+   move_async_example
+   move_path_with_blend_example
+   record_data_example
+   jog_example

@@ -1,6 +1,6 @@
-*************
-API Reference
-*************
+***
+API
+***
 
 The ur_rtde library API consists of the following parts:
 

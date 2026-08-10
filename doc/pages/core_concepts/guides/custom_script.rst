@@ -18,7 +18,7 @@ where rtde_init.script contains the header and rtde_control.script contains the 
 You then create a new program in Polyscope and add a BeforeStart sequence to this new program. Simply add the
 rtde_init.script to the BeforeStart sequence and the rtde_control.script to the Robot Program. See picture below:
 
-.. image:: ../_static/ur_rtde_manual_program.png
+.. image:: ../../../_static/ur_rtde_manual_program.png
 
 Remember! that if you copy the rtde_control.script, please remove the $MAJOR.MINOR tags, that is used for removing
 lines that are not compatible with specific controller versions. Also set the appropriate offset for reg_offset_float and
@@ -46,7 +46,4 @@ for C++:
 When you execute your ur_rtde application it will simply wait for you to press play on the controller in order
 to start, unless you use the FLAG_NO_WAIT, in which case the interface will be initialized, but cannot be
 used before the program is running on the controller. Finally make sure the robot is in remote control.
-
-
-.. _record-data-example:
 

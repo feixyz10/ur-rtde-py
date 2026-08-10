@@ -16,26 +16,57 @@ robots that facilitates a `Real-Time Data Exchange (RTDE)
 In this documentation
 ---------------------
 
-..  grid:: 1 1 2 2
+.. grid:: 2
+    :gutter: 3
 
-   ..  grid-item:: :doc:`Getting started <pages/getting_started/index>`
+    .. grid-item-card:: :octicon:`rocket;1.2em;sd-text-primary sd-mr-2 sd-align-middle` Getting Started
+        :link: pages/getting_started/index
+        :link-type: doc
+        :class-title: sd-text-primary sd-font-weight-bold
 
-       **Start here**: a hands-on introduction to ur_rtde for new users
+        **Start here:** A hands-on introduction to ur_rtde for new users.
 
-   ..  grid-item:: :doc:`Code Examples <pages/examples/index>`
+    .. grid-item-card:: :octicon:`terminal;1.2em;sd-text-primary sd-mr-2 sd-align-middle` Code Examples
+        :link: pages/examples/index
+        :link-type: doc
+        :class-title: sd-text-primary sd-font-weight-bold
 
-       **Ready-to-run C++ and Python scripts**  for common robot control tasks.
+        **Ready-to-run C++ and Python scripts** for common robot control tasks.
 
-.. grid:: 1 1 2 2
-   :reverse:
+    .. grid-item-card::  :octicon:`cpu;1.2em;sd-text-primary sd-mr-2 sd-align-middle` Core Concepts
+        :link: pages/core_concepts/index
+        :link-type: doc
+        :class-title: sd-text-primary sd-font-weight-bold
 
-   .. grid-item:: :doc:`Reference <pages/reference/index>`
+        **Foundational knowledge** on RTDE timing, interface design, and OS configuration.
 
-      **Technical information** - specifications, APIs
+    .. grid-item-card::  :octicon:`book;1.2em;sd-text-primary sd-mr-2 sd-align-middle` Reference
+        :link: pages/reference/index
+        :link-type: doc
+        :class-title: sd-text-primary sd-font-weight-bold
 
-   .. grid-item:: :doc:`Core Concepts & System Architecture <pages/explanation/index>`
+        **Technical information** - specifications, C++ & Python APIs.
 
-      **Foundational knowledge** on RTDE timing, interface design, and OS configuration.
+.. ..  grid:: 1 1 2 2
+
+..    ..  grid-item:: :doc:`Getting started <pages/getting_started/index>`
+
+..        **Start here**: a hands-on introduction to ur_rtde for new users
+
+..    ..  grid-item:: :doc:`Code Examples <pages/examples/index>`
+
+..        **Ready-to-run C++ and Python scripts**  for common robot control tasks.
+
+.. .. grid:: 1 1 2 2
+..    :reverse:
+
+..    .. grid-item:: :doc:`Reference <pages/reference/index>`
+
+..       **Technical information** - specifications, APIs
+
+..    .. grid-item:: :doc:`Core Concepts & System Architecture <pages/core_concepts/index>`
+
+..       **Foundational knowledge** on RTDE timing, interface design, and OS configuration.
 
 ---------
 
@@ -64,6 +95,5 @@ If you use ur_rtde in your research, please cite this `paper <https://doi.org/10
 
    pages/getting_started/index
    pages/examples/index
-   faq/faq
-   guides/guides
-   api/api
+   pages/reference/index
+   pages/core_concepts/index

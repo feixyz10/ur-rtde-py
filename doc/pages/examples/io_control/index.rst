@@ -7,5 +7,4 @@ and operating a Robotiq gripper over the robot's tool communication interface.
 .. toctree::
    :maxdepth: 1
 
-   ../io_example
-   ../robotiq_gripper_example
+   io_example

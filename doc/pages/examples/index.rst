@@ -14,3 +14,4 @@ In this section you will find ready-to-run C++ and Python scripts for common rob
    high_frequency_servoing/index
    force_torque_control/index
    io_control/index
+   other/index

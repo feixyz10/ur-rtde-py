@@ -7,5 +7,5 @@ applying compliant force-mode control along a specified axis.
 .. toctree::
    :maxdepth: 1
 
-   ../move_until_contact
-   ../forcemode_example
+   move_until_contact
+   forcemode_example
