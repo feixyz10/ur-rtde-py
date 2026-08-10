@@ -1,63 +1,35 @@
+.. _installation:
+
 ************
 Installation
 ************
-This section contains information on how to build and install the ur_rtde library.
 
-Quick Install
-=============
-
-If you are on Linux (Ubuntu), you can install ur_rtde with:
-
-.. code-block:: shell
-
-    sudo add-apt-repository ppa:sdurobotics/ur-rtde
-    sudo apt-get update
-    sudo apt install librtde librtde-dev
-
-
-If you only want to the use the Python interface, you can install ur_rtde through pip:
-
-.. code-block:: shell
-
-   pip install --user ur_rtde
-
-Notice! Make sure your pip version >=19.3, otherwise the install might fail.
-
-
-Compatible Robots
-=================
-*  All CB-Series from CB3/CB3.1 software 3.3
-*  All e-Series
-
-Compatible Operating Systems
-============================
-Currently tested on:
-
-*  Ubuntu 20.04 (Focal Fossa)
-*  Ubuntu 22.04 (Jammy Jellyfish)
-*  Ubuntu 24.04 (Noble Numbat)
-*  macOS 15 (Sequoia)
-*  Windows 10 Pro x64
+There are several ways to use ur_rtde, if you want to try the C++ examples simply
+follow the steps outlined in the :ref:`Building ur_rtde <building_ur_rtde>` section.
 
 .. note::
-    The ur_rtde should be compatible with Windows 10. However it has currently only
-    been tested without python bindings. pybind11 supports
-    *Microsoft Visual Studio 2015 Update 3 or newer* on Windows.
+    It is not necessary to install the library to be able to run the examples, this is only relevant
+    if you want to use ur_rtde as a library that you link to your own C++ application.
+
+If you are interested in using the Python module you can follow the instructions given in the
+:ref:`Quick install <quick_install>` section.
+
+.. _quick_install:
+
+Quick install
+=============
+The easiest way if you want to try out ur_rtde, is to install the python module from PyPI.
+
+.. code-block:: bash
+
+   pip install ur_rtde
 
 
-Build Instructions
-==================
+.. _building_ur_rtde:
+
+Building ur_rtde
+================
 This section describes how to build ur_rtde from source on different platforms. The dependencies of ur_rtde are:
-
-.. image:: ../_static/boost-logo.svg
-  :width: 60
-  :target: https://www.boost.org/
-  :alt: Boost
-
-.. image:: ../_static/pybind11-logo.png
-  :width: 100
-  :target: https://github.com/pybind/pybind11
-  :alt: pybind11
 
 * `Boost <https://www.boost.org/>`_
 * `pybind11 <https://github.com/pybind/pybind11>`_
@@ -113,13 +85,6 @@ Build
     default interpreter is Python3. If you do not want to use Python at all, please
     use :bash:`cmake -DPYTHON_BINDINGS:BOOL=OFF ..`
 
-.. tip::
-    In order to test the interface, download the most recent UR simulator for your robot from here
-    `UR Download <https://www.universal-robots.com/download/>`_. Once installed run the simulator with:
-    :bash:`./start-ursim.sh`, when the simulator is running, initialize the robot by first clicking the **'ON'** button,
-    and next clicking the **'START'** button. You can now run the examples.
-
-
 Windows
 -------
 
@@ -153,7 +118,7 @@ If you are using Microsoft Visual Studio with CMake support (supported since 201
 You should be able to navigate to the folder you cloned the repository to and open the ur_rtde
 as a CMake project. See the image below.
 
-.. image:: ../_static/open_cmake_project.png
+.. image:: ../../_static/open_cmake_project.png
   :target: https://docs.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio?view=vs-2019
   :alt: Open CMake Project
 
@@ -166,11 +131,6 @@ Set the following CMake Command Arguments in order for the project to find Boost
 .. code-block:: shell
 
     -DBOOST_ROOT=<YOUR_BOOST_ROOT> -DBOOST_LIBRARYDIR=<YOUR_BOOST_LIBRARY_DIR> -DPYTHON_BINDINGS:BOOL=OFF
-
-.. tip::
-    Remember you can run the UR Simulator on Windows through the virtual machines provided by UR. In the VMware virtual
-    machine you can set the network adapter to "Bridged" in the 'Virtual Machine Settings'. If you then obtain the IP
-    address of the robot using ifconfig, you can test the communication with your windows host running the ur_rtde program.
 
 Commandline Build
 ~~~~~~~~~~~~~~~~~
