@@ -1,6 +1,17 @@
 ServoJ
 ======
 
+.. raw:: html
+
+   <div style="width:60%; max-width:512px; cursor:pointer; border-radius:6px; overflow:hidden;"
+        title="Click to pause / resume"
+        onclick="var v=this.querySelector('video'); v.paused ? v.play() : v.pause();">
+     <video autoplay loop muted playsinline
+            style="width:100%; display:block; border-radius:6px;">
+       <source src="../../../_static/servoJ_example.webm" type="video/webm">
+     </video>
+   </div>
+
 **servoJ** streams joint-space setpoints to the robot at 500 Hz, allowing smooth continuous motion
 along pre-computed trajectories. Each cycle the host sends the next target joint configuration and the
 robot's internal interpolator blends towards it using the ``lookahead_time`` and ``gain`` parameters.
@@ -23,8 +34,7 @@ motion that runs until **Ctrl+C** is pressed.
 .. note::
    For best results with high-frequency servoing, a real-time OS kernel is recommended to avoid
    jitter caused by OS scheduling. See the :ref:`Real-time Setup Guide <realtime-setup-guide>` for
-   instructions. That said, servoJ works fine without a real-time kernel for most use cases — you may
-   simply see slightly less precise timing at 500 Hz on a standard kernel.
+   instructions. The example runs fine on a standard kernel, but timing precision may be slightly lower.
 
 .. note::
    Keep consecutive target poses close together (dense trajectory). If the robot struggles to keep up,

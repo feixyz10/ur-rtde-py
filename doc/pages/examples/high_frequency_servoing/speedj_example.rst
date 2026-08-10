@@ -1,12 +1,6 @@
 SpeedJ
 ======
 
-.. role:: bash(code)
-   :language: bash
-
-.. role:: cmake_inline(code)
-   :language: cmake
-
 This example will use the **speedJ** command to move the robot, where the first 2 joints are speeding continuously
 in a 500Hz control loop for 2 seconds.
 

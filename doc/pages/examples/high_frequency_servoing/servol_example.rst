@@ -1,6 +1,17 @@
 ServoL
 ======
 
+.. raw:: html
+
+   <div style="width:60%; max-width:512px; cursor:pointer; border-radius:6px; overflow:hidden;"
+        title="Click to pause / resume"
+        onclick="var v=this.querySelector('video'); v.paused ? v.play() : v.pause();">
+     <video autoplay loop muted playsinline
+            style="width:100%; display:block; border-radius:6px;">
+       <source src="../../../_static/servoL_example.webm" type="video/webm">
+     </video>
+   </div>
+
 **servoL** streams Cartesian-space setpoints to the robot at 500 Hz, enabling smooth continuous motion
 along pre-computed Cartesian trajectories. The host computes the next TCP pose each cycle and the robot
 blends towards it using the ``lookahead_time`` and ``gain`` parameters, similar to servoJ but in task
