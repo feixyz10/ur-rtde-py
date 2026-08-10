@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 
+constexpr double pi = 3.14159265358979323846;
+
 using namespace ur_rtde;
 using namespace std::chrono;
 
@@ -24,7 +26,7 @@ int main(int argc, char* argv[])
   double dt = 1.0 / 500; // 2ms
   double lookahead_time = 0.1;
   double gain = 800;
-  const std::vector<double> joint_q_start = {-M_PI / 2, -M_PI / 2, -M_PI / 2, -M_PI / 2, M_PI / 2, 0.0};
+  const std::vector<double> joint_q_start = {-pi / 2, -pi / 2, -pi / 2, -pi / 2, pi / 2, 0.0};
 
   // Move to initial joint position with a regular moveJ
   rtde_control.moveJ(joint_q_start);
@@ -32,8 +34,8 @@ int main(int argc, char* argv[])
   // Continuous small sinusoidal motion on all 6 joints
   const std::vector<double> amplitudes   = {0.03, 0.03, 0.03, 0.02, 0.02, 0.02}; // rad
   const std::vector<double> frequencies  = {0.5,  0.6,  0.7,  0.8,  0.9,  1.0};  // Hz
-  const std::vector<double> phases       = {0.0,  M_PI / 6.0, M_PI / 3.0,
-                                            M_PI / 2.0, 2.0 * M_PI / 3.0, 5.0 * M_PI / 6.0};
+  const std::vector<double> phases       = {0.0,  pi / 6.0, pi / 3.0,
+                                            pi / 2.0, 2.0 * pi / 3.0, 5.0 * pi / 6.0};
 
   auto motion_start_time = steady_clock::now();
   std::vector<double> joint_q(6);
@@ -46,7 +48,7 @@ int main(int argc, char* argv[])
       double elapsed = duration<double>(steady_clock::now() - motion_start_time).count();
 
       for (int i = 0; i < 6; i++)
-        joint_q[i] = joint_q_start[i] + amplitudes[i] * std::sin(2.0 * M_PI * frequencies[i] * elapsed + phases[i]);
+        joint_q[i] = joint_q_start[i] + amplitudes[i] * std::sin(2.0 * pi * frequencies[i] * elapsed + phases[i]);
 
       rtde_control.servoJ(joint_q, 0.0, 0.0, dt, lookahead_time, gain);
       rtde_control.waitPeriod(t_start);

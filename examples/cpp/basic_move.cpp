@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 
+constexpr double pi = 3.14159265358979323846;
+
 using namespace ur_rtde;
 
 int main(int argc, char* argv[])
@@ -13,7 +15,7 @@ int main(int argc, char* argv[])
 
   // Move to a safe home position using moveJ (joint space)
   // Arguments: joint positions [rad], speed [rad/s], acceleration [rad/s^2]
-  std::vector<double> home_q = {-M_PI/2, -M_PI/2, -M_PI/2, -M_PI/2, M_PI/2, 0.0};
+  std::vector<double> home_q = {-pi/2, -pi/2, -pi/2, -pi/2, pi/2, 0.0};
   rtde_control.moveJ(home_q, 0.5, 0.5);
 
   // Read the TCP pose after arriving at home so moveL targets are always valid

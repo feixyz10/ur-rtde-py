@@ -7,6 +7,8 @@
 #include <thread>
 #include <vector>
 
+constexpr double pi = 3.14159265358979323846;
+
 using namespace ur_rtde;
 using namespace std::chrono;
 
@@ -24,10 +26,9 @@ int main(int argc, char* argv[])
   std::signal(SIGINT, signal_handler);
 
   // Task parameters
-  double dt = 1.0 / 500; // 500Hz control loop
   std::vector<double> task_frame       = {0, 0, 0, 0, 0, 0};
   std::vector<int>    compliance_vector = {1, 1, 1, 0, 0, 0};
-  std::vector<double> init_q           = {-M_PI/2, -M_PI/2, -M_PI/2, -M_PI/2, M_PI/2, 0.0};
+  std::vector<double> init_q           = {-pi/2, -pi/2, -pi/2, -pi/2, pi/2, 0.0};
   std::vector<double> v_max            = {0.5, 0.5, 0.5, 0.2, 0.2, 0.2};
 
   // Spiral search parameters

@@ -6,6 +6,8 @@
 #include <iostream>
 #include <vector>
 
+constexpr double pi = 3.14159265358979323846;
+
 using namespace ur_rtde;
 using namespace std::chrono;
 
@@ -46,7 +48,7 @@ int main(int argc, char* argv[])
     {
       steady_clock::time_point t_start = rtde_control.initPeriod();
       double elapsed = duration<double>(steady_clock::now() - motion_start_time).count();
-      double angle = 2.0 * M_PI * frequency * elapsed;
+      double angle = 2.0 * pi * frequency * elapsed;
 
       // Circular trajectory in the XY plane of the base frame
       std::vector<double> target = start_pose;
