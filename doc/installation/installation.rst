@@ -64,7 +64,7 @@ This section describes how to build ur_rtde from source on different platforms. 
 
 .. note::
    The pybind11 dependency is optional and are only required if ur_rtde are to be used with Python. The ur_rtde library
-   depends on Boost for networking and threading.
+   depends on Boost for networking.
 
 Linux (Ubuntu) and macOS
 ------------------------
