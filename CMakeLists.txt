@@ -63,19 +63,16 @@ set(PROJECT_AUTHOR "Anders Prier Lindvig")
 set(PROJECT_COPYRIGHT "2026")
 set(PROJECT_MAIL "anpl@mmmi.sdu.dk")
 
+message(STATUS "USE_WERROR: ${USE_WERROR}")
+message(STATUS "BUILD_TYPE: ${BUILD_TYPE}")
+
 if(${CODE})
 	set(Boost_USE_MULTITHREAD ON)
 	if(WINDOWS_INSTALLER)
 		set(Boost_USE_STATIC_LIBS ON)
 	endif()
-	# Check if the conan file exist to find the dependencies
-	if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-		include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-		conan_basic_setup(NO_OUTPUT_DIRS KEEP_RPATHS SKIP_STD TARGETS)
-		set(Boost_USE_STATIC_LIBS ON)
-		set(Boost_ADDITIONAL_VERSIONS 1.75.0)
-	endif()
-	find_package(Boost REQUIRED COMPONENTS system program_options)
+
+	find_package(Boost REQUIRED)
 	find_package(Threads)
 
 	if(${PYTHON_BINDINGS})
@@ -83,7 +80,7 @@ if(${CODE})
 		if(NOT PYBIND11_PYTHON_VERSION)
 			set(PYBIND11_PYTHON_VERSION "" CACHE STRING "Python version to use for compiling modules")
 		endif()
-		set(Python_ADDITIONAL_VERSIONS 3.11 3.10 3.9 3.8 3.7 3.6 3.5 3.4)
+		set(Python_ADDITIONAL_VERSIONS 3.14 3.13 3.12 3.11 3.10 3.9 3.8 3.7 3.6 3.5 3.4)
 		find_package(PythonLibsNew ${PYBIND11_PYTHON_VERSION} REQUIRED)
 
 		if(${CMAKE_VERSION} VERSION_LESS 3.11)
@@ -191,11 +188,32 @@ if(${CODE})
 
 	# Write the rtde_control script to a header file
 	file(READ scripts/rtde_control.script RTDE_CONTROL_SCRIPT)
-	set(header "const std::string NEW_LINE= \"\\n\"; const std::string QUOTATION = \"\\\"\"; std::string UR_SCRIPT = \"")
-	string(REGEX REPLACE "\"" "\"+QUOTATION+\"" FILEVAR ${RTDE_CONTROL_SCRIPT})
-	string(REGEX REPLACE "\\\n" "\" + NEW_LINE  + \n\"" FILEVAR ${FILEVAR})
-	set(end "\";")
-	file(WRITE include/ur_rtde/rtde_control_script.h "${header}${FILEVAR}${end}")
+	string(LENGTH "${RTDE_CONTROL_SCRIPT}" SCRIPT_LENGTH)
+	set(SCRIPT_DELIMITER_INDEX 0)
+	while(TRUE)
+		set(SCRIPT_DELIMITER "urtde${SCRIPT_DELIMITER_INDEX}")
+		string(FIND "${RTDE_CONTROL_SCRIPT}" ")${SCRIPT_DELIMITER}" SCRIPT_DELIMITER_POSITION)
+		if(SCRIPT_DELIMITER_POSITION EQUAL -1)
+			break()
+		endif()
+		math(EXPR SCRIPT_DELIMITER_INDEX "${SCRIPT_DELIMITER_INDEX} + 1")
+	endwhile()
+
+	set(SCRIPT_HEADER "const std::string UR_SCRIPT = []() {\n  std::string script;\n  script.reserve(${SCRIPT_LENGTH});\n")
+	set(SCRIPT_OFFSET 0)
+	while(SCRIPT_OFFSET LESS SCRIPT_LENGTH)
+		math(EXPR SCRIPT_REMAINING "${SCRIPT_LENGTH} - ${SCRIPT_OFFSET}")
+		if(SCRIPT_REMAINING GREATER 8000)
+			set(SCRIPT_CHUNK_LENGTH 8000)
+		else()
+			set(SCRIPT_CHUNK_LENGTH ${SCRIPT_REMAINING})
+		endif()
+		string(SUBSTRING "${RTDE_CONTROL_SCRIPT}" ${SCRIPT_OFFSET} ${SCRIPT_CHUNK_LENGTH} SCRIPT_CHUNK)
+		string(APPEND SCRIPT_HEADER "  script.append(R\"${SCRIPT_DELIMITER}(${SCRIPT_CHUNK})${SCRIPT_DELIMITER}\");\n")
+		math(EXPR SCRIPT_OFFSET "${SCRIPT_OFFSET} + ${SCRIPT_CHUNK_LENGTH}")
+	endwhile()
+	string(APPEND SCRIPT_HEADER "  return script;\n}();\n")
+	file(WRITE include/ur_rtde/rtde_control_script.h "${SCRIPT_HEADER}")
 
 	add_library(rtde ${BUILD_TYPE} ${LIB_SOURCE_FILES} ${LIB_HEADER_FILES} ${LIB_URCL_HEADER_FILES})
 	target_include_directories(rtde
@@ -204,9 +222,9 @@ if(${CODE})
 			$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 			$<INSTALL_INTERFACE:include>)
 	target_link_libraries(rtde PUBLIC
-			${Boost_SYSTEM_LIBRARY}
 			${CMAKE_THREAD_LIBS_INIT})
 	set_target_properties(rtde PROPERTIES
+			POSITION_INDEPENDENT_CODE ON
 			VERSION ${PROJECT_VERSION}
 			SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR})
 
@@ -218,6 +236,7 @@ if(${CODE})
         target_compile_definitions(rtde_control PRIVATE rtde_EXPORTS)
 
 		pybind11_add_module(rtde_receive SHARED src/rtde_python_bindings.cpp)
+		target_link_libraries(rtde_receive PRIVATE rtde)
 		target_include_directories(rtde_receive
 			PUBLIC ${Boost_INCLUDE_DIRS}
 			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -226,9 +245,7 @@ if(${CODE})
 			PRIVATE ${PYBIND11_INCLUDE_DIR}  # from project CMakeLists.txt
 			PRIVATE ${pybind11_INCLUDE_DIR}  # from pybind11Config
 			PRIVATE ${PYTHON_INCLUDE_DIRS})
-		target_link_libraries(rtde_receive PRIVATE
-				${Boost_SYSTEM_LIBRARY})
-                target_compile_definitions(rtde_receive PRIVATE rtde_EXPORTS)
+        target_compile_definitions(rtde_receive PRIVATE rtde_EXPORTS)
 
 		pybind11_add_module(rtde_io SHARED ${LIB_SOURCE_FILES} ${LIB_HEADER_FILES} src/rtde_python_bindings.cpp)
 		target_include_directories(rtde_io
@@ -239,10 +256,6 @@ if(${CODE})
 				PRIVATE ${PYBIND11_INCLUDE_DIR}  # from project CMakeLists.txt
 				PRIVATE ${pybind11_INCLUDE_DIR}  # from pybind11Config
 				PRIVATE ${PYTHON_INCLUDE_DIRS})
-		target_link_libraries(rtde_io PRIVATE
-				#${PYTHON_LIBRARIES}
-				${Boost_SYSTEM_LIBRARY}
-				)
 		target_compile_definitions(rtde_io PRIVATE rtde_EXPORTS)
 
 		pybind11_add_module(script_client SHARED ${LIB_SOURCE_FILES} ${LIB_HEADER_FILES} src/rtde_python_bindings.cpp)
@@ -254,10 +267,6 @@ if(${CODE})
 				PRIVATE ${PYBIND11_INCLUDE_DIR}  # from project CMakeLists.txt
 				PRIVATE ${pybind11_INCLUDE_DIR}  # from pybind11Config
 				PRIVATE ${PYTHON_INCLUDE_DIRS})
-			target_link_libraries(script_client PRIVATE
-				#${PYTHON_LIBRARIES}
-				${Boost_SYSTEM_LIBRARY}
-				)
 			target_compile_definitions(script_client PRIVATE rtde_EXPORTS)
 
 
@@ -270,10 +279,6 @@ if(${CODE})
 			PRIVATE ${PYBIND11_INCLUDE_DIR}  # from project CMakeLists.txt
 			PRIVATE ${pybind11_INCLUDE_DIR}  # from pybind11Config
 			PRIVATE ${PYTHON_INCLUDE_DIRS})
-		target_link_libraries(dashboard_client PRIVATE
-			#${PYTHON_LIBRARIES}
-			${Boost_SYSTEM_LIBRARY}
-			)
 		target_compile_definitions(dashboard_client PRIVATE rtde_EXPORTS)
 
 	endif()
@@ -281,58 +286,58 @@ if(${CODE})
 	if(${EXAMPLES})
 		add_executable(servoj_example examples/cpp/servoj_example.cpp)
 		target_include_directories(servoj_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(servoj_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY})
+		target_link_libraries(servoj_example PRIVATE rtde )
 
 		add_executable(forcemode_example examples/cpp/forcemode_example.cpp)
 		target_include_directories(forcemode_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(forcemode_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY})
+		target_link_libraries(forcemode_example PRIVATE rtde )
 
 		add_executable(speedj_example examples/cpp/speedj_example.cpp)
 		target_include_directories(speedj_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(speedj_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY})
+		target_link_libraries(speedj_example PRIVATE rtde )
 
 		add_executable(movej_path_with_blend_example examples/cpp/movej_path_with_blend_example.cpp)
 		target_include_directories(movej_path_with_blend_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(movej_path_with_blend_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY})
+		target_link_libraries(movej_path_with_blend_example PRIVATE rtde )
 
 		add_executable(io_example examples/cpp/io_example.cpp)
 		target_include_directories(io_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(io_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY})
+		target_link_libraries(io_example PRIVATE rtde )
 
 		add_executable(move_async_example examples/cpp/move_async_example.cpp)
 		target_include_directories(move_async_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(move_async_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY})
+		target_link_libraries(move_async_example PRIVATE rtde )
 
 		add_executable(move_path_async_example examples/cpp/move_path_async_example.cpp)
 		target_include_directories(move_path_async_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(move_path_async_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY})
+		target_link_libraries(move_path_async_example PRIVATE rtde )
 
 		add_executable(robotiq_gripper_example examples/cpp/robotiq_gripper_example.cpp)
 		target_include_directories(robotiq_gripper_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(robotiq_gripper_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY})
+		target_link_libraries(robotiq_gripper_example PRIVATE rtde )
 
 		add_executable(move_until_contact_example examples/cpp/move_until_contact.cpp)
 		target_include_directories(move_until_contact_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(move_until_contact_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY})
+		target_link_libraries(move_until_contact_example PRIVATE rtde )
 
 		add_executable(record_data_example examples/cpp/record_data_example.cpp)
 		target_include_directories(record_data_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(record_data_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY}  ${Boost_PROGRAM_OPTIONS_LIBRARY})
+		target_link_libraries(record_data_example PRIVATE rtde)
 
 		add_executable(realtime_control_example examples/cpp/realtime_control_example.cpp)
 		target_include_directories(realtime_control_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(realtime_control_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY}  ${Boost_PROGRAM_OPTIONS_LIBRARY})
+		target_link_libraries(realtime_control_example PRIVATE rtde)
 
 		add_executable(contact_detection_example examples/cpp/contact_detection_example.cpp)
 		target_include_directories(contact_detection_example PUBLIC ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(contact_detection_example PRIVATE rtde ${Boost_SYSTEM_LIBRARY})
+		target_link_libraries(contact_detection_example PRIVATE rtde )
 
 		if (UNIX)
 			find_package(Curses)
 			if(Curses_FOUND)
 				add_executable(jog_example examples/cpp/jog_example.cpp)
 				target_include_directories(jog_example PUBLIC ${CURSES_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-				target_link_libraries(jog_example PRIVATE rtde ${CURSES_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
+				target_link_libraries(jog_example PRIVATE rtde ${CURSES_LIBRARY})
 				set_target_properties(jog_example
 					PROPERTIES
 					RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin"
