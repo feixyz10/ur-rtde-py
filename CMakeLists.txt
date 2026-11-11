@@ -3,9 +3,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 if (POLICY CMP0074)
 	cmake_policy(SET CMP0074 NEW)
 endif()
-if (POLICY CMP0148)
-	cmake_policy(SET CMP0148 OLD)
-endif()
 if (POLICY CMP0167)
 	cmake_policy(SET CMP0167 NEW)
 endif()
@@ -76,37 +73,14 @@ if(${CODE})
 	find_package(Threads)
 
 	if(${PYTHON_BINDINGS})
-		# This is required to find python site-packages for installation of ur_rtde python bindings.
-		if(NOT PYBIND11_PYTHON_VERSION)
-			set(PYBIND11_PYTHON_VERSION "" CACHE STRING "Python version to use for compiling modules")
-		endif()
-		set(Python_ADDITIONAL_VERSIONS 3.14 3.13 3.12 3.11 3.10 3.9 3.8 3.7 3.6 3.5 3.4)
-		find_package(PythonLibsNew ${PYBIND11_PYTHON_VERSION} REQUIRED)
-
-		if(${CMAKE_VERSION} VERSION_LESS 3.11)
-			# pybind11 must be found from submodule
-			add_subdirectory(pybind11)
+		find_package(Python 3.10 REQUIRED COMPONENTS Interpreter Development.Module
+			OPTIONAL_COMPONENTS Development.SABLD)
+		find_package(nanobind CONFIG REQUIRED)
+		if(SKBUILD)
+			set(PYTHON_SITE_PACKAGES ".")
 		else()
-			# Get pybind11 with FetchContent
-			include(FetchContent)
-
-			FetchContent_Declare(
-					pybind11-src
-					GIT_REPOSITORY https://github.com/pybind/pybind11.git
-					GIT_TAG        v2.13.6
-			)
-			if(${CMAKE_VERSION} VERSION_LESS 3.14)
-				macro(FetchContent_MakeAvailable NAME)
-					FetchContent_GetProperties(${NAME})
-					if(NOT ${NAME}_POPULATED)
-						FetchContent_Populate(${NAME})
-						add_subdirectory(${${NAME}_SOURCE_DIR} ${${NAME}_BINARY_DIR})
-					endif()
-				endmacro()
-			endif()
-			FetchContent_MakeAvailable(pybind11-src)
+			set(PYTHON_SITE_PACKAGES "${Python_SITEARCH}")
 		endif()
-
 	endif()
 endif()
 
@@ -231,56 +205,11 @@ if(${CODE})
 	#target_compile_definitions(rtde PRIVATE BOOST_ASIO_NO_DEPRECATED)
 
 	if(${PYTHON_BINDINGS})
-		pybind11_add_module(rtde_control SHARED src/rtde_python_bindings.cpp)
-		target_link_libraries(rtde_control PRIVATE rtde)
-        target_compile_definitions(rtde_control PRIVATE rtde_EXPORTS)
-
-		pybind11_add_module(rtde_receive SHARED src/rtde_python_bindings.cpp)
-		target_link_libraries(rtde_receive PRIVATE rtde)
-		target_include_directories(rtde_receive
-			PUBLIC ${Boost_INCLUDE_DIRS}
-			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-			$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-			$<INSTALL_INTERFACE:include>
-			PRIVATE ${PYBIND11_INCLUDE_DIR}  # from project CMakeLists.txt
-			PRIVATE ${pybind11_INCLUDE_DIR}  # from pybind11Config
-			PRIVATE ${PYTHON_INCLUDE_DIRS})
-        target_compile_definitions(rtde_receive PRIVATE rtde_EXPORTS)
-
-		pybind11_add_module(rtde_io SHARED ${LIB_SOURCE_FILES} ${LIB_HEADER_FILES} src/rtde_python_bindings.cpp)
-		target_include_directories(rtde_io
-				PUBLIC ${Boost_INCLUDE_DIRS}
-				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-				$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-				$<INSTALL_INTERFACE:include>
-				PRIVATE ${PYBIND11_INCLUDE_DIR}  # from project CMakeLists.txt
-				PRIVATE ${pybind11_INCLUDE_DIR}  # from pybind11Config
-				PRIVATE ${PYTHON_INCLUDE_DIRS})
-		target_compile_definitions(rtde_io PRIVATE rtde_EXPORTS)
-
-		pybind11_add_module(script_client SHARED ${LIB_SOURCE_FILES} ${LIB_HEADER_FILES} src/rtde_python_bindings.cpp)
-		target_include_directories(script_client
-				PUBLIC ${Boost_INCLUDE_DIRS}
-				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-				$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-				$<INSTALL_INTERFACE:include>
-				PRIVATE ${PYBIND11_INCLUDE_DIR}  # from project CMakeLists.txt
-				PRIVATE ${pybind11_INCLUDE_DIR}  # from pybind11Config
-				PRIVATE ${PYTHON_INCLUDE_DIRS})
-			target_compile_definitions(script_client PRIVATE rtde_EXPORTS)
-
-
-		pybind11_add_module(dashboard_client SHARED ${LIB_SOURCE_FILES} ${LIB_HEADER_FILES} src/rtde_python_bindings.cpp)
-		target_include_directories(dashboard_client
-			PUBLIC ${Boost_INCLUDE_DIRS}
-			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-			$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-			$<INSTALL_INTERFACE:include>
-			PRIVATE ${PYBIND11_INCLUDE_DIR}  # from project CMakeLists.txt
-			PRIVATE ${pybind11_INCLUDE_DIR}  # from pybind11Config
-			PRIVATE ${PYTHON_INCLUDE_DIRS})
-		target_compile_definitions(dashboard_client PRIVATE rtde_EXPORTS)
-
+		foreach(module_name rtde_control rtde_receive rtde_io script_client dashboard_client)
+			nanobind_add_module(${module_name} BACKEND_MODULE nanobind_backend
+				src/rtde_python_bindings.cpp)
+			target_link_libraries(${module_name} PRIVATE rtde)
+		endforeach()
 	endif()
 
 	if(${EXAMPLES})
@@ -392,19 +321,22 @@ if(${CODE})
 		set(INCLUDE_INSTALL_DIR "${INCLUDE_INSTALL_DIR}")
 	endif()
 
-	install(TARGETS rtde
+	if(NOT SKBUILD)
+		install(TARGETS rtde
 			EXPORT RTDETargets
 			LIBRARY DESTINATION ${LIB_INSTALL_DIR} COMPONENT ur_rtde_lib
 			ARCHIVE DESTINATION ${LIB_INSTALL_DIR} COMPONENT ur_rtde_lib
 			RUNTIME DESTINATION ${BIN_INSTALL_DIR} COMPONENT ur_rtde_lib
 			INCLUDES DESTINATION ${INCLUDE_INSTALL_DIR}
 			)
+	endif()
 	if(${PYTHON_BINDINGS})
 		install(TARGETS rtde_control rtde_receive rtde_io dashboard_client script_client
 				DESTINATION ${PYTHON_SITE_PACKAGES}
 				COMPONENT ur_rtde-python)
 	endif()
 
+	if(NOT SKBUILD)
 	# Install ur_rtde headers
 	install(
 			FILES
@@ -452,6 +384,7 @@ if(${CODE})
 		DESTINATION ${LIB_INSTALL_DIR}/cmake/ur_rtde
 		COMPONENT ur_rtde_cmake
 	)
+	endif()
 endif()
 
 macro(getBoostLibraryList output list)

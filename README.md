@@ -1,107 +1,105 @@
 <div align="center">
 
-<img width=20% src="https://gitlab.com/sdurobotics/ur_rtde/-/raw/master/doc/_static/ur_rtde_logo.png">
-</div>
-&nbsp;
-<div align="center">
+<img width="25%" src="doc/_static/ur_rtde_logo.png" alt="ur-rtde-py">
 
-[![build status](https://gitlab.com/sdurobotics/ur_rtde/badges/master/pipeline.svg)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
-[![pypi](https://badgen.net/pypi/v/ur_rtde)](https://pypi.org/project/ur-rtde/)
-[![DOI:10.1109/SII59315.2025.10871000](http://img.shields.io/badge/DOI-10.1109/SII59315.2025.10871000-00629B.svg)](https://doi.org/10.1109/SII59315.2025.10871000)
-<br>
-[![ps-3.14](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_3_14.svg?job=polyscope-3.14)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
-[![ps-3.15.8](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_3_15_8.svg?job=polyscope-3.15.8)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
-[![ps-5.5](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_5_5.svg?job=polyscope-5.5)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
-[![ps-5.17.3](https://gitlab.com/sdurobotics/ur_rtde/-/jobs/artifacts/master/raw/ps_5_17_3.svg?job=polyscope-5.17.3)](https://gitlab.com/sdurobotics/ur_rtde/-/pipelines/latest)
+# ur-rtde-py
+
+> Modernized Python packaging of **ur_rtde** — Universal Robots RTDE control with nanobind bindings and one stable-ABI wheel per platform for all CPython ≥ 3.10.
+
+[![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
+[![PyPI](https://badgen.net/pypi/v/ur-rtde-py)](https://pypi.org/project/ur-rtde-py/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 </div>
 
-A C++ interface for controlling and receiving data from a UR robot using the
-[Real-Time Data Exchange (RTDE)](https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/real-time-data-exchange-rtde-guide-22229/)
- interface of the robot. The interface can also be used with python, through the provided python bindings.
+**ur-rtde-py** is a modernized packaging fork of [ur_rtde](https://gitlab.com/sdurobotics/ur_rtde),
+the C++ / Python interface for controlling Universal Robots over the RTDE protocol.
+It keeps the C++ core and the Python API of upstream `v1.6.5` unchanged, while replacing the
+Python build and packaging stack with [nanobind](https://github.com/wjakob/nanobind),
+[scikit-build-core](https://github.com/scikit-build/scikit-build-core) and [uv](https://docs.astral.sh/uv/).
 
->>> [!tip] Announcements
-* [PolyScopeX](https://www.universal-robots.com/products/polyscope-x/) is now supported, when using the [External Control UR Cap](https://github.com/UniversalRobots/Universal_Robots_ExternalControl_URCapX) for PolyScopeX :rocket:
-* Control the robot joint torques directly using `directTorque()` and get the robot Mass matrix, Jacobian, Coriolis and centrifugal forces. (From PolyScope 5.26)
->>>
+## Relationship to ur_rtde
 
-### Key Features ###
- * Fast and lightweight interface for programming UR robots.
- * Uses the [Real-Time Data Exchange (RTDE)](https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/real-time-data-exchange-rtde-guide-22229/) of the robot.
- * Execute with real-time priority on operating systems with a real-time kernel, see the [Real-time Setup Guide](https://sdurobotics.gitlab.io/ur_rtde/guides/guides.html#realtime-setup-guide)
- * Available on multiple platforms (Linux, Windows, macOS)
- * Can be used from C++ and Python.
- * Relies only on STL datatypes and can be used with various robot frameworks.
- * Switchable register range (FieldBus / PLC [0..23] or external clients range [24..47])
- * Use it with the UR's [ExternalControl UR Cap](https://github.com/UniversalRobots/Universal_Robots_ExternalControl_URCap),
-    download it [here](https://github.com/UniversalRobots/Universal_Robots_ROS_Driver/blob/master/ur_robot_driver/resources/externalcontrol-1.0.5.urcap) see
-    how to install it on the robot [here](https://github.com/UniversalRobots/Universal_Robots_ROS_Driver/blob/master/ur_robot_driver/doc/install_urcap_e_series.md).
-    In order to setup ur_rtde for using it see [here](https://sdurobotics.gitlab.io/ur_rtde/examples/examples.html#use-with-externalcontrol-ur-cap).
- * Easy to install and setup.
+| | upstream [`ur_rtde`](https://gitlab.com/sdurobotics/ur_rtde) | this fork `ur-rtde-py` |
+|---|---|---|
+| C++ core | ✅ identical (based on `v1.6.5`) | ✅ identical |
+| Python API | `rtde_control`, `rtde_receive`, `rtde_io`, `script_client`, `dashboard_client` | same module names, same signatures |
+| Binding framework | pybind11 | nanobind |
+| Wheel type | one wheel per Python version | **one `cp310-abi3` wheel per platform, all CPython ≥ 3.10** |
+| Build backend | setuptools + custom CMake glue | scikit-build-core |
+| Dev workflow | pip / setup.py | `uv sync` / `uv build` |
+| CI | GitLab CI | GitHub Actions |
 
-### Documentation ###
-Documentation with installation and build instructions, examples and API resides at <https://sdurobotics.gitlab.io/ur_rtde/>
+In short: **same robot API, modern packaging.** Code written for upstream `ur_rtde` keeps
+working with this fork without changes (`import rtde_control`, `import rtde_receive`, …).
 
-### How to Cite ###
-If you use ur_rtde in your research, please cite this [paper](https://doi.org/10.1109/SII59315.2025.10871000):
+> ⚠️ Because both distributions install the same top-level modules, `ur_rtde` (upstream) and
+> `ur-rtde-py` **must not be installed in the same environment**. Uninstall one before
+> installing the other.
 
+## Why this fork
+
+- **Works out of the box on modern platforms.** Upstream `ur_rtde` does not publish wheels for
+  macOS Apple Silicon or for newer CPython releases (3.13 / 3.14), so users there must compile
+  from source. This fork ships prebuilt `cp310-abi3` wheels for Apple Silicon and every
+  CPython ≥ 3.10 — no compiler, CMake or Boost needed.
+- **One wheel per platform, not per Python version.** Wheels are tagged `cp310-abi3`
+  (stable ABI): a single Linux x86_64 wheel, for example, works on CPython 3.10, 3.11, 3.12,
+  3.13, 3.14 and future releases — no rebuilds when a new Python comes out.
+- **nanobind bindings.** Smaller binaries and faster runtime dispatch than pybind11,
+  with the same expressive C++ binding API.
+- **Reproducible one-command builds.** `uv sync` creates the dev environment and builds the
+  bindings; `uv build` produces the sdist and the abi3 wheel.
+- **Cross-platform wheels via cibuildwheel.** Linux (manylinux x86_64 / aarch64),
+  macOS (x86_64 / Apple Silicon) and Windows x64, built by GitHub Actions.
+- **Unchanged core.** The battle-tested C++ implementation, robot compatibility and Python
+  API of upstream ur_rtde are kept as-is.
+
+## Installation
+
+```bash
+pip install ur-rtde-py
 ```
-@inproceedings{10871000,
-  author={Lindvig, Anders Prier and Iturrate, Iñigo and Kindler, Uwe and Sloth, Christoffer},
-  booktitle={2025 IEEE/SICE International Symposium on System Integration (SII)},
-  title={ur_rtde: An Interface for Controlling Universal Robots (UR) using the Real-Time Data Exchange(RTDE)}, year={2025}, pages={1118-1123}, keywords={Protocols;Linux;C++ languages;System integration;Writing;Manipulators;Real-time systems;Libraries;Timing;MATLAB},
-  doi={10.1109/SII59315.2025.10871000}}
 
+or with uv:
+
+```bash
+uv pip install ur-rtde-py
 ```
 
-### Quick Install ##
+Requires CPython ≥ 3.10. See the **[user guide](USER_GUIDE.md)** for a full usage walkthrough,
+code examples and troubleshooting.
 
-#### From PPA: ####
-If you are on Ubuntu, you can install ur_rtde with:
+## Supported platforms
 
-    sudo add-apt-repository ppa:sdurobotics/ur-rtde
-    sudo apt-get update
-    sudo apt install librtde librtde-dev
+| Platform | Wheels | Source build |
+|---|---|---|
+| Linux x86_64 (manylinux) | ✅ | ✅ |
+| Linux aarch64 (manylinux) | ✅ | ✅ |
+| macOS x86_64 | ✅ | ✅ |
+| macOS Apple Silicon | ✅ | ✅ |
+| Windows x64 | ✅ | ✅ |
 
-#### From PyPi: ####
-If you only want to the use the Python interface, you can install ur_rtde through pip:
+PyPy and free-threaded CPython (`3.13t` / `3.14t`) are not supported by the abi3 wheels.
 
-    pip3 install ur_rtde
+## Development
 
-:warning: Notice! Make sure your pip version >=**19.3**, otherwise the install might fail.
+```bash
+uv sync          # create .venv, build and install the bindings
+uv run python ci/smoke_test.py
+uv build         # sdist + cp310-abi3 wheel
+```
 
-#### Prebuilt python wheels support matrix: ####
-|   | macOS Intel | macOS Apple Silicon | Windows 64bit | Windows 32bit | Windows Arm64 | manylinux x86_64 | manylinux i686 | manylinux aarch64 | manylinux ppc64le | manylinux s390x |
-|---------------|----|-----|-----|---|-----|---|---|---|-----|-----|
-| CPython 3.6   | ✅ | :x: | :x: | :x: | :x: | ✅ | ✅ | ✅ | ✅  | ✅  |
-| CPython 3.7   | ✅ | :x: | ✅  | :x: | :x: | ✅ | ✅ | ✅ | ✅  | ✅  |
-| CPython 3.8   | ✅ | :x: | ✅  | :x: | :x: | ✅ | ✅ | ✅ | ✅  | ✅  |
-| CPython 3.9   | ✅ | :x: | ✅  | :x: | ✅¹ | ✅ | ✅ | ✅ | ✅  | ✅  |
-| CPython 3.10  | ✅ | :x: | ✅  | :x: | ✅¹ | ✅ | ✅ | ✅ | ✅  | ✅  |
-| CPython 3.11  | ✅ | :x: | ✅  | :x: | ✅¹ | ✅ | ✅ | ✅ | ✅  | ✅  |
-| CPython 3.12  | ✅ | :x: | ✅  | :x: | ✅¹ | ✅ | ✅ | ✅ | ✅  | ✅  |
-| PyPy 3.7 v7.3 | ✅ | :x: | ✅  | :x: | :x: | ✅ | ✅ | ✅ | :x: | :x: |
-| PyPy 3.8 v7.3 | ✅ | :x: | ✅  | :x: | :x: | ✅ | ✅ | ✅ | :x: | :x: |
-| PyPy 3.9 v7.3 | ✅ | :x: | ✅  | :x: | :x: | ✅ | ✅ | ✅ | :x: | :x: |
+Building from source requires a C++17 compiler, CMake ≥ 3.15 and Boost headers
+(header-only parts are sufficient).
 
-<sup>¹ Windows arm64 support is experimental.</sup><br>
+## Documentation
 
-### Dependencies ###
-*  [Boost](https://www.boost.org/)
-*  [pybind11](https://github.com/pybind/pybind11) (Optional)
+- [User guide](USER_GUIDE.md) — installation, examples, troubleshooting
+- Upstream API docs: <https://sdurobotics.gitlab.io/ur_rtde/>
 
-### Compatible Robots ###
+## Credits & license
 
-*  All CB-Series from CB3/CB3.1 software 3.3
-*  All e-Series
-
-### Compatible Operating Systems ###
-Currently tested on:
-
-*  Ubuntu 20.04 (Focal Fossa)
-*  Ubuntu 22.04 (Jammy Jellyfish)
-*  Ubuntu 24.04 (Noble Numbat)
-*  macOS 15 (Sequoia)
-*  Windows 10 Pro x64
-
-### Contact ###
-If you have any questions or suggestions to the interface, feel free to contact Anders Prier Lindvig <anpl@mmmi.sdu.dk> or create an issue [here](https://gitlab.com/caro-sdu/ur_rtde/issues).
+The robot interface was created by **Anders Prier Lindvig / SDU Robotics** and is published
+under the MIT license — see [LICENSE](LICENSE). This fork only modernizes the Python
+packaging and CI; all credit for the RTDE implementation belongs to the original authors.

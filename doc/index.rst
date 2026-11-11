@@ -5,8 +5,8 @@ ur_rtde
 .. |License badge| image:: https://img.shields.io/badge/License-MIT-yellow.svg
    :target: https://opensource.org/licenses/MIT
 
-.. |Build badge| image:: https://gitlab.com/sdurobotics/ur_rtde/badges/master/pipeline.svg
-   :target: https://gitlab.com/sdurobotics/ur_rtde/commits/master
+.. |Build badge| image:: ../../../actions/workflows/ci.yml/badge.svg
+   :target: ../../../actions/workflows/ci.yml
 
 A cross-platform C++ interface for controlling Universal Robot (UR)
 manipulators. This interface is capable of controlling all UR

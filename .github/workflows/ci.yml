@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cpp:
+    name: C++ / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Boost (Ubuntu)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libboost-dev
+
+      - name: Install Boost (macOS)
+        if: runner.os == 'macOS'
+        run: brew install boost
+
+      - name: Cache Boost headers (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/boost_1_90_0
+          key: boost-headers-1.90.0-windows
+
+      - name: Install Boost headers (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (!(Test-Path "$env:RUNNER_TEMP/boost_1_90_0")) {
+            Invoke-WebRequest `
+              https://archives.boost.io/release/1.90.0/source/boost_1_90_0.tar.bz2 `
+              -OutFile "$env:RUNNER_TEMP/boost.tar.bz2"
+            tar -xjf "$env:RUNNER_TEMP/boost.tar.bz2" -C "$env:RUNNER_TEMP"
+          }
+          "BOOST_ROOT=$env:RUNNER_TEMP/boost_1_90_0" >> $env:GITHUB_ENV
+          "BOOST_INCLUDEDIR=$env:RUNNER_TEMP/boost_1_90_0" >> $env:GITHUB_ENV
+
+      - name: Configure
+        run: >
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=Release
+          -DPYTHON_BINDINGS=OFF
+          -DEXAMPLES=OFF
+          -DUSE_WERROR=ON
+
+      - name: Build
+        run: cmake --build build --config Release --parallel
+
+  python:
+    name: Python ${{ matrix.python }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+        python: ["3.10", "3.14"]
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install Boost (Ubuntu)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libboost-dev
+
+      - name: Install Boost (macOS)
+        if: runner.os == 'macOS'
+        run: brew install boost
+
+      - name: Cache Boost headers (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/boost_1_90_0
+          key: boost-headers-1.90.0-windows
+
+      - name: Install Boost headers (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (!(Test-Path "$env:RUNNER_TEMP/boost_1_90_0")) {
+            Invoke-WebRequest `
+              https://archives.boost.io/release/1.90.0/source/boost_1_90_0.tar.bz2 `
+              -OutFile "$env:RUNNER_TEMP/boost.tar.bz2"
+            tar -xjf "$env:RUNNER_TEMP/boost.tar.bz2" -C "$env:RUNNER_TEMP"
+          }
+          "BOOST_ROOT=$env:RUNNER_TEMP/boost_1_90_0" >> $env:GITHUB_ENV
+          "BOOST_INCLUDEDIR=$env:RUNNER_TEMP/boost_1_90_0" >> $env:GITHUB_ENV
+
+      - name: Build bindings
+        run: uv sync --python ${{ matrix.python }}
+
+      - name: Smoke test
+        run: uv run python ci/smoke_test.py

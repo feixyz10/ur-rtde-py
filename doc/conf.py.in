@@ -106,8 +106,6 @@ if '@DOC@' == 'html':
 #
 # html_theme_options = {}
 html_theme_options = {
-    "repository_url": "https://gitlab.com/sdurobotics/ur_rtde",
-    "use_repository_button": True,
     "show_toc_level": 3,
     "use_sidenotes": True,
     "navbar_persistent": []

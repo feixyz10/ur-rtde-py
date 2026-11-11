@@ -1,9 +1,13 @@
-#!/bin/bash -ex
-NCORES=$(($(grep -c ^processor /proc/cpuinfo) + 1))
-wget -c 'https://sourceforge.net/projects/boost/files/boost/1.90.0/boost_1_90_0.tar.bz2/download'
-tar xf download
-cd boost_1_90_0
-./bootstrap.sh --with-libraries=system
-./b2 -j${NCORES} cxxflags="-fPIC" runtime-link=static variant=release link=static install
-cd ..
-rm -rf download.bz2 boost_1_90_0
+#!/bin/bash
+set -e -x
+
+# ur_rtde only uses header-only parts of Boost, so installing the headers is
+# sufficient. This script runs inside the manylinux container on cibuildwheel.
+BOOST_VERSION=1.90.0
+BOOST_UNDERSCORE=1_90_0
+
+curl -L \
+  "https://archives.boost.io/release/${BOOST_VERSION}/source/boost_${BOOST_UNDERSCORE}.tar.bz2" \
+  -o "/tmp/boost_${BOOST_UNDERSCORE}.tar.bz2"
+tar -xjf "/tmp/boost_${BOOST_UNDERSCORE}.tar.bz2" -C /tmp
+cp -r "/tmp/boost_${BOOST_UNDERSCORE}/boost" /usr/local/include/

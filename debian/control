@@ -9,8 +9,6 @@ Build-Depends:
 Standards-Version: 4.1.2
 Section: libs
 Homepage: https://sdurobotics.gitlab.io/ur_rtde/
-Vcs-Git: https://gitlab.com/sdurobotics/ur_rtde.git
-Vcs-Browser: https://gitlab.com/sdurobotics/ur_rtde
 
 Package: librtde
 Architecture: amd64

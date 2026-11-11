@@ -1,6 +1,5 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: ur-rtde
-Source: <https://gitlab.com/sdurobotics/ur_rtde>
 
 Files: *
 Copyright: 2007-2019 SDU Robotics, Faculty of Engineering, University of Southern Denmark <sdur-software@tek.sdu.dk>

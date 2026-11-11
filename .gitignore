@@ -24,7 +24,10 @@ debian/tmp
 CMakeSettings.json
 
 # python build files
-build-setuptools
+.venv/
+wheelhouse/
+dist/
 src/ur_rtde.egg-info
 src/*.so
 src/*.so.*
+.DS_Store
