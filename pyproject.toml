@@ -35,4 +35,4 @@ wheel.py-api = "cp310"
 
 [tool.cibuildwheel]
 build = "cp310-*"
-test-import = "rtde_control"
+test-command = "python -c \"import rtde_control\""

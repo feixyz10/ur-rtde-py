@@ -51,7 +51,7 @@ working with this fork without changes (`import rtde_control`, `import rtde_rece
 - **Reproducible one-command builds.** `uv sync` creates the dev environment and builds the
   bindings; `uv build` produces the sdist and the abi3 wheel.
 - **Cross-platform wheels via cibuildwheel.** Linux (manylinux x86_64 / aarch64),
-  macOS (x86_64 / Apple Silicon) and Windows x64, built by GitHub Actions.
+  macOS Apple Silicon and Windows x64, built by GitHub Actions.
 - **Unchanged core.** The battle-tested C++ implementation, robot compatibility and Python
   API of upstream ur_rtde are kept as-is.
 
@@ -76,11 +76,12 @@ code examples and troubleshooting.
 |---|---|---|
 | Linux x86_64 (manylinux) | ✅ | ✅ |
 | Linux aarch64 (manylinux) | ✅ | ✅ |
-| macOS x86_64 | ✅ | ✅ |
 | macOS Apple Silicon | ✅ | ✅ |
 | Windows x64 | ✅ | ✅ |
+| macOS Intel (x86_64) | ❌ | ❌ |
 
-PyPy and free-threaded CPython (`3.13t` / `3.14t`) are not supported by the abi3 wheels.
+macOS Intel is not supported. PyPy and free-threaded CPython (`3.13t` / `3.14t`)
+are not supported by the abi3 wheels.
 
 ## Development
 

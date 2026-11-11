@@ -36,16 +36,6 @@ if(${CODE})
 	set(CMAKE_CXX_STANDARD_REQUIRED ON)
 	set(CMAKE_CXX_EXTENSIONS OFF)
 
-	if(NOT DEFINED USE_WERROR OR "${USE_WERROR}" STREQUAL "")
-		set(USE_WERROR OFF)
-	endif()
-
-	if(${USE_WERROR} AND NOT DEFINED MSVC)
-		set(WALL "-Wall -Wno-strict-aliasing -Wno-unused-function -Wno-pragmas")
-		set(WERROR "-Werror")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WALL} ${WERROR}")
-		message(STATUS "CompileFlags: ${CMAKE_CXX_FLAGS}")
-	endif()
 	if(DEFINED WIN32)
 		ADD_DEFINITIONS(-D_WIN32_WINNT=0x0A00)
 		ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB)
@@ -63,18 +53,39 @@ set(PROJECT_MAIL "anpl@mmmi.sdu.dk")
 message(STATUS "USE_WERROR: ${USE_WERROR}")
 message(STATUS "BUILD_TYPE: ${BUILD_TYPE}")
 
-if(${CODE})
-	set(Boost_USE_MULTITHREAD ON)
-	if(WINDOWS_INSTALLER)
-		set(Boost_USE_STATIC_LIBS ON)
-	endif()
+if(${CODE} AND ${USE_WERROR} AND NOT MSVC)
+	set(WALL "-Wall -Wno-strict-aliasing -Wno-unused-function -Wno-pragmas")
+	set(WERROR "-Werror")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WALL} ${WERROR}")
+	message(STATUS "CompileFlags: ${CMAKE_CXX_FLAGS}")
+endif()
 
-	find_package(Boost REQUIRED)
+if(${CODE})
+	# ur_rtde only uses header-only parts of Boost. Search for boost/version.hpp
+	# directly to avoid FindBoost module version differences (CMake 3.30+
+	# requires BoostConfig.cmake which is absent in raw header installations).
+	find_path(Boost_INCLUDE_DIR
+		boost/version.hpp
+		HINTS
+			${BOOST_ROOT}/include
+			$ENV{BOOST_ROOT}/include
+			$ENV{BOOST_INCLUDEDIR}
+			${CMAKE_PREFIX_PATH}/include
+		PATHS
+			/usr/include
+			/usr/local/include
+			/opt/homebrew/include
+	)
+	if(NOT Boost_INCLUDE_DIR)
+		message(FATAL_ERROR "Boost headers not found. Set BOOST_ROOT to your Boost installation directory.")
+	endif()
+	message(STATUS "Boost headers: ${Boost_INCLUDE_DIR}")
+	set(Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 	find_package(Threads)
 
 	if(${PYTHON_BINDINGS})
 		find_package(Python 3.10 REQUIRED COMPONENTS Interpreter Development.Module
-			OPTIONAL_COMPONENTS Development.SABLD)
+			OPTIONAL_COMPONENTS Development.SABIModule)
 		find_package(nanobind CONFIG REQUIRED)
 		if(SKBUILD)
 			set(PYTHON_SITE_PACKAGES ".")
@@ -190,7 +201,7 @@ if(${CODE})
 	file(WRITE include/ur_rtde/rtde_control_script.h "${SCRIPT_HEADER}")
 
 	add_library(rtde ${BUILD_TYPE} ${LIB_SOURCE_FILES} ${LIB_HEADER_FILES} ${LIB_URCL_HEADER_FILES})
-	target_include_directories(rtde
+	target_include_directories(rtde SYSTEM
 			PUBLIC ${Boost_INCLUDE_DIRS}
 			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 			$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>

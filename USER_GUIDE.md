@@ -12,7 +12,7 @@ wheels use the CPython **stable ABI**.
 - 🚀 Real-time control at up to 500 Hz (`servoJ` / `servoL` / `servoC`)
 - 📦 One `cp310-abi3` wheel per platform — works on every CPython ≥ 3.10
 - 🧩 Same module names and API as upstream `ur_rtde` — existing code keeps working
-- 🖥️ Linux, macOS and Windows support
+- 🖥️ Linux, macOS Apple Silicon and Windows support
 
 ## Installation
 
@@ -29,7 +29,8 @@ uv pip install ur-rtde-py
 **Requirements**
 
 - CPython 3.10 or newer (3.10 – 3.14 and future 3.x are covered by one abi3 wheel per platform)
-- Linux (x86_64, aarch64), macOS (x86_64, Apple Silicon) or Windows x64
+- Linux (x86_64, aarch64), macOS Apple Silicon or Windows x64
+- macOS Intel (`x86_64`) is not supported
 - Network access from your computer to the robot (ports 30001–30004, 29999 by default)
 
 > ⚠️ **Do not install together with the upstream `ur_rtde` package.** Both provide the same
@@ -165,7 +166,7 @@ Scripts written for `ur_rtde` run unchanged; only the package installed via `pip
 
 ## Building from source
 
-If no wheel matches your platform, `pip` falls back to a source build. You will need:
+If no wheel matches a supported platform, `pip` falls back to a source build. You will need:
 
 - A C++17 compiler (GCC ≥ 8, Clang ≥ 7, MSVC 2019+)
 - CMake ≥ 3.15
@@ -192,6 +193,7 @@ uv build           # sdist + cp310-abi3 wheel
   ports 30001–30004 (RTDE) and 29999 (dashboard) are reachable.
 - **No prebuilt wheel for your platform** — pip will build from source; install a C++17
   compiler, CMake and Boost headers first (see above).
+- **macOS Intel** — not supported by this fork; use Apple Silicon, Linux, or Windows.
 - **PyPy / free-threaded Python** — not supported by the stable-ABI wheels; use standard CPython.
 
 ## Credits & license

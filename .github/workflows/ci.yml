@@ -33,7 +33,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/boost_1_90_0
-          key: boost-headers-1.90.0-windows
+          key: boost-headers-1.90.0-v2-windows
 
       - name: Install Boost headers (Windows)
         if: runner.os == 'Windows'
@@ -44,9 +44,12 @@ jobs:
               https://archives.boost.io/release/1.90.0/source/boost_1_90_0.tar.bz2 `
               -OutFile "$env:RUNNER_TEMP/boost.tar.bz2"
             tar -xjf "$env:RUNNER_TEMP/boost.tar.bz2" -C "$env:RUNNER_TEMP"
+            # CMake find_package(Boost) expects $BOOST_ROOT/include/boost/
+            New-Item -ItemType Directory -Force "$env:RUNNER_TEMP/boost_1_90_0/include"
+            Move-Item "$env:RUNNER_TEMP/boost_1_90_0/boost" "$env:RUNNER_TEMP/boost_1_90_0/include/boost"
           }
           "BOOST_ROOT=$env:RUNNER_TEMP/boost_1_90_0" >> $env:GITHUB_ENV
-          "BOOST_INCLUDEDIR=$env:RUNNER_TEMP/boost_1_90_0" >> $env:GITHUB_ENV
+          "BOOST_INCLUDEDIR=$env:RUNNER_TEMP/boost_1_90_0/include" >> $env:GITHUB_ENV
 
       - name: Configure
         run: >
@@ -87,7 +90,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/boost_1_90_0
-          key: boost-headers-1.90.0-windows
+          key: boost-headers-1.90.0-v2-windows
 
       - name: Install Boost headers (Windows)
         if: runner.os == 'Windows'
@@ -98,9 +101,12 @@ jobs:
               https://archives.boost.io/release/1.90.0/source/boost_1_90_0.tar.bz2 `
               -OutFile "$env:RUNNER_TEMP/boost.tar.bz2"
             tar -xjf "$env:RUNNER_TEMP/boost.tar.bz2" -C "$env:RUNNER_TEMP"
+            # CMake find_package(Boost) expects $BOOST_ROOT/include/boost/
+            New-Item -ItemType Directory -Force "$env:RUNNER_TEMP/boost_1_90_0/include"
+            Move-Item "$env:RUNNER_TEMP/boost_1_90_0/boost" "$env:RUNNER_TEMP/boost_1_90_0/include/boost"
           }
           "BOOST_ROOT=$env:RUNNER_TEMP/boost_1_90_0" >> $env:GITHUB_ENV
-          "BOOST_INCLUDEDIR=$env:RUNNER_TEMP/boost_1_90_0" >> $env:GITHUB_ENV
+          "BOOST_INCLUDEDIR=$env:RUNNER_TEMP/boost_1_90_0/include" >> $env:GITHUB_ENV
 
       - name: Build bindings
         run: uv sync --python ${{ matrix.python }}
